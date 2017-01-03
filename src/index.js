@@ -1,10 +1,5 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import Chart from './components/chart.js';
+import App from './components/app';
 
-import './assets/stylesheets/app.css';
-
-const mountingPoint = document.createElement('div');
-mountingPoint.className = 'react-app';
-document.body.appendChild(mountingPoint);
-ReactDom.render(<Chart/>, mountingPoint);
+ReactDom.render(<App/>, document.querySelector('#app'));
