@@ -1,60 +1,40 @@
-var path              = require('path');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
-var webpack           = require('webpack');
-var merge             = require('webpack-merge');
+//================
+// Import webpack
+//================
+var webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var TARGET    = process.env.npm_lifecycle_event;
-var ROOT_PATH = path.resolve(__dirname);
-
-var common = {
-  entry: path.resolve(ROOT_PATH, 'src'),
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
-  output: {
-    path: path.resolve(ROOT_PATH, 'build'),
-    filename: 'bundle.js'
-  },
+//================
+// This is the complicated part, where we'll be configuring our
+// webpack file to work with our application.
+//================
+module.exports = {
+  context: __dirname,
+  entry: "./src/index.js",
+  debug: true,
+  devtool: "#eval-source-map",
   module: {
     loaders: [
       {
+        test: /\.js|.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['react', 'es2015', 'stage-0'],
+          plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy']
+        }
+      },
+      {
         test: /\.css$/,
-        loaders: ['style', 'css'],
-        include: path.resolve(ROOT_PATH, 'src')
+        loader: ExtractTextPlugin.extract('css')
       }
     ]
   },
+  output: {
+    path: __dirname,
+    filename: "bundle.js"
+  },
   plugins: [
-    new HtmlwebpackPlugin({
-      title: 'Simple Scatter Plot'
-    })
+    new ExtractTextPlugin('src/assets/stylesheets/app.css', { allChunks: true })
   ]
 };
-
-if (TARGET === 'start' || !TARGET) {
-  module.exports = merge(common, {
-    devtool: 'eval-source-map',
-    module: {
-      loaders: [
-        {
-          test: /\.js|.jsx?$/,
-          include: path.resolve(ROOT_PATH, 'src'),
-          loaders: [
-            'react-hot',
-            'babel?presets[]=react,presets[]=es2015'
-         ]
-        }
-      ]
-    },
-    devServer: {
-      historyApiFallback: true,
-      hot: true,
-      inline: true,
-      progress: true,
-      port: 8080
-    },
-    plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ]
-  })
-}

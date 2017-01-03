@@ -18,7 +18,10 @@
   },
   "author": "Thanathip Lertprasitphan",
   "dependencies": {
+    "axios": "^0.15.3",
     "d3": "^3.5.16",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "rc-slider": "^5.4.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.4.0",
