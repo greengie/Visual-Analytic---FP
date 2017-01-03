@@ -1,25 +1,27 @@
 import React from 'react';
 import Reflux from 'reflux';
+import axios from 'axios';
 
 import ScatterPlot from './scatterplot';
 import ChartStore from '../stores/ChartStore';
+import gdp_2010 from '../data/gdp_2010';
+import popdensity_2010 from '../data/popdensity_2010';
+
+require('rc-slider/assets/index.css');
+const Slider = require('rc-slider');
 
 const styles = {
-  width   : 500,
-  height  : 300,
-  padding : 30,
+  width   : 1000,
+  height  : 400,
+  padding : 40,
 };
 
-// number of data points for chart. [10-40] points.
-const numDataPoints = () => Math.floor(Math.random() * 10) + 1;
+const bar_style = {
+  width   : 400,
+  margin  : 50
+};
 
-// function that return a random number from 400 to 1000.
-const randomNum = () => Math.floor(Math.random() * 1000) + 400;
-
-// function that create an array of numDataPoints elements of (x, y) coordinates.
-const randomDataSet = () =>  {
-  return Array.apply(null, {length: numDataPoints()}).map(() => [randomNum(),randomNum()]);
-}
+const API_URL = 'http://128.199.99.233:3000/api/';
 
 const Chart = React.createClass({
   mixins: [
@@ -27,36 +29,52 @@ const Chart = React.createClass({
   ],
 
   getInitialState() {
-    return {data: randomDataSet()
+    return {dataX: gdp_2010,
+      dataY: popdensity_2010
     };
   },
+
+  getDataX(value) {
+      console.log(value);
+      axios.get(API_URL + 'gdp/'+value)
+        .then(res => {
+          const dataX = res.data;
+          this.setState({dataX});
+        });
+  },
+
+  getDataY(value) {
+      axios.get(API_URL + 'popdensity/'+value)
+        .then(res => {
+          const dataY = res.data;
+          this.setState({dataY});
+        });
+    },
 
   componentDidMount() {
     this.listenTo(ChartStore, this._onChartStoreChange);
   },
 
   _onChartStoreChange(payload) {
-    console.log(payload.highlight);
+    console.log(payload);
     this.setState({chartHighlight: payload.highlight});
   },
 
-  randomizeData() {
-    console.log("STATE CHANGE!!! Generate New Data");
-    this.setState({data: randomDataSet() });
+  onSliderChange(value) {
+    // console.log('/api/'+value);
+    this.getDataX(value);
+    this.getDataY(value);
   },
 
   render() {
-    const {data, chartHighlight} = this.state;
+    const {dataX, dataY, chartHighlight} = this.state;
     return (
         <div className='main'>
           <h1>Simple Scatter-Plot</h1>
-          <ScatterPlot data={data} highlight={chartHighlight} {...styles} />
-            <div className = "controls">
-              <button className="btn randomize" onClick={() => this.randomizeData()}>
-              Randomize data
-              </button>
-            </div>
-            <h2>Number of Points: {this.state.data.length}</h2>
+          <ScatterPlot dataX={dataX} dataY={dataY} highlight={chartHighlight} {...styles} />
+          <div style={bar_style}>
+            <Slider tipTransitionName="rc-slider-tooltip-zoom-down" min={1990} max= {2015} onChange={this.onSliderChange} defaultValue={2010}/>
+          </div>
         </div>
     );
   }
