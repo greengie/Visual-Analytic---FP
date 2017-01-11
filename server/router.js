@@ -14,8 +14,8 @@ module.exports = function(app) {
   const apiRoutes = express.Router();
 
   //define first router
-  apiRoutes.get('/gdp/:year', _ourController.gdp);
-  apiRoutes.get('/popdensity/:year', _ourController.popdensity);
+  apiRoutes.get('/:selector/:year', _ourController.data);
+  // apiRoutes.get('/popdensity/:year', _ourController.popdensity);
   //tell the app to use apiRoutes
   //and set the base url to
   // localhost:3000/api
