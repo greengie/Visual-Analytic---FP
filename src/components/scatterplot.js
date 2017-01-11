@@ -13,7 +13,7 @@ const ScatterPlot = React.createClass({
     width: React.PropTypes.number.isRequired,
     height: React.PropTypes.number.isRequired,
     padding: React.PropTypes.number.isRequired,
-    highlight: React.PropTypes.object
+    highlight: React.PropTypes.string
   },
 
   _handleHover(d) {
@@ -29,7 +29,7 @@ const ScatterPlot = React.createClass({
       for(var j = 0;j < dataY.length; j++){
         const c_y_id = dataY[j].country_code;
         if(c_x_id === c_y_id){
-          dataXY[i]['popdensity'] = dataY[j].popdensity;
+          dataXY[i]['data_value_y'] = dataY[j].data_value;
           break;
         }
       }
@@ -38,7 +38,7 @@ const ScatterPlot = React.createClass({
   },
 
   render() {
-    // console.log(this.props);
+    // console.log(this.props.dataX);
     const highlight = this.props.highlight;
     const width = this.props.width;
     const height = this.props.height;
@@ -48,10 +48,10 @@ const ScatterPlot = React.createClass({
 
     // set up scales for radius and colour based on the min/max in the data set
     // return the largest X coordinate from the data set
-    const xMax = (data) => d3.max(data, (d) => d.popdensity);
+    const xMax = (data) => d3.max(data, (d) => d.data_value);
 
     // return the largest Y coordinate from the data set
-    const yMax = (data) => d3.max(data, (d) => d.gdp);
+    const yMax = (data) => d3.max(data, (d) => d.data_value_y);
 
     //return a function that "scales" X coordinates from the data to fit the chart.
     const xScale = d3.scale.linear().domain([0, xMax(data)]).range([padding, width - padding*2]);
@@ -78,7 +78,7 @@ const ScatterPlot = React.createClass({
             // console.log(d);
             const className = highlight === d.country_name ? 'highlight' : '';
             return (
-              <circle key={i} className={className} r={7} cx={xScale(d.popdensity)} cy={yScale(d.gdp)}
+              <circle key={i} className={className} r={7} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
                   onMouseOver={this._handleHover.bind(this, d.country_name)}
                   onMouseOut={this._handleHover.bind(this, null)}
                 />

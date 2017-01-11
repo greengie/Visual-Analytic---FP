@@ -2,12 +2,15 @@ import React from 'react';
 import Reflux from 'reflux';
 import axios from 'axios';
 
+// import Selector from './selector';
+// import CustomizedSlider from './slider';
 import ScatterPlot from './scatterplot';
 import ChartStore from '../stores/ChartStore';
 import gdp_2010 from '../data/gdp_2010';
 import popdensity_2010 from '../data/popdensity_2010';
 
 require('rc-slider/assets/index.css');
+
 const Slider = require('rc-slider');
 
 const styles = {
@@ -30,21 +33,26 @@ const Chart = React.createClass({
 
   getInitialState() {
     return {dataX: gdp_2010,
-      dataY: popdensity_2010
+      dataY: popdensity_2010,
+      value: 2010,
+      selectorX: 'gdp',
+      selectorY: 'popdensity'
     };
   },
 
-  getDataX(value) {
-      console.log(value);
-      axios.get(API_URL + 'gdp/'+value)
+  getDataX(value, selector) {
+      // console.log(this.state.selectorX);
+      // API_URL + selectX + value
+      axios.get(API_URL + selector + '/' + value)
         .then(res => {
           const dataX = res.data;
           this.setState({dataX});
         });
   },
 
-  getDataY(value) {
-      axios.get(API_URL + 'popdensity/'+value)
+  getDataY(value, selector) {
+      // API_URL + selectY + value
+      axios.get(API_URL + selector + '/' + value)
         .then(res => {
           const dataY = res.data;
           this.setState({dataY});
@@ -61,19 +69,60 @@ const Chart = React.createClass({
   },
 
   onSliderChange(value) {
-    // console.log('/api/'+value);
-    this.getDataX(value);
-    this.getDataY(value);
+    this.setState({value,});
+    this.getDataX(value, this.state.selectorX);
+    this.getDataY(value, this.state.selectorY);
   },
 
+  onAfterChange(value) {
+    console.log(this.state);
+    // console.log(value); //eslint-disable-line
+  },
+
+  handleSelectorXChange(event) {
+    this.setState({selectorX: event.target.value});
+    // console.log(this.state);
+    this.getDataX(this.state.value, event.target.value);
+    // this.getDataY(this.state.value, this.state.selectorY);
+  },
+
+  handleSelectorYChange(event) {
+    this.setState({selectorY: event.target.value});
+    // this.getDataX(this.state.value, this.state.selectorX);
+    this.getDataY(this.state.value, event.target.value);
+  },
+
+
   render() {
-    const {dataX, dataY, chartHighlight} = this.state;
+    const {dataX, dataY, chartHighlight, selectorX, selectorY, value} = this.state;
+    // console.log(dataX)
     return (
         <div className='main'>
           <h1>Simple Scatter-Plot</h1>
           <ScatterPlot dataX={dataX} dataY={dataY} highlight={chartHighlight} {...styles} />
           <div style={bar_style}>
-            <Slider tipTransitionName="rc-slider-tooltip-zoom-down" min={1990} max= {2015} onChange={this.onSliderChange} defaultValue={2010}/>
+            <Slider value={this.state.value}
+              onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
+              min={1990} max={2015}
+            />
+          </div>
+          <div id='selector-x'>
+            <label>
+              X-AXIS:
+              <select value={this.state.selectorX} onChange={this.handleSelectorXChange} >
+                <option value="gdp">gdp</option>
+                <option value="popdensity">popdensity</option>
+              </select>
+            </label>
+          </div>
+          <div id='selector-y'>
+            <label>
+              Y-AXIS:
+              <select value={this.state.selectorY} onChange={this.handleSelectorYChange} >
+                <option value="gdp">gdp</option>
+                <option value="popdensity">popdensity</option>
+              </select>
+            </label>
           </div>
         </div>
     );
