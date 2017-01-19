@@ -8,6 +8,7 @@ import ScatterPlot from './scatterplot';
 import ChartStore from '../stores/ChartStore';
 import gdp_2010 from '../data/gdp_2010';
 import popdensity_2010 from '../data/popdensity_2010';
+import indicator_list from '../data/indicator_list';
 
 require('rc-slider/assets/index.css');
 
@@ -16,7 +17,7 @@ const Slider = require('rc-slider');
 const styles = {
   width   : 1000,
   height  : 400,
-  padding : 40,
+  padding : 80,
 };
 
 const bar_style = {
@@ -36,7 +37,9 @@ const Chart = React.createClass({
       dataY: popdensity_2010,
       value: 2010,
       selectorX: 'gdp',
-      selectorY: 'popdensity'
+      selectorY: 'popdensity',
+      xMax: indicator_list.gdp,
+      yMax: indicator_list.popdensity
     };
   },
 
@@ -81,37 +84,49 @@ const Chart = React.createClass({
 
   handleSelectorXChange(event) {
     this.setState({selectorX: event.target.value});
-    // console.log(this.state);
     this.getDataX(this.state.value, event.target.value);
-    // this.getDataY(this.state.value, this.state.selectorY);
+    for(var key in indicator_list){
+      // console.log(event.target)
+      if(key === event.target.value){
+        // console.log("aaaa");
+        this.setState({xMax: indicator_list[key]})
+      }
+    }
   },
 
   handleSelectorYChange(event) {
     this.setState({selectorY: event.target.value});
-    // this.getDataX(this.state.value, this.state.selectorX);
     this.getDataY(this.state.value, event.target.value);
+    for(var key in indicator_list){
+      if(key == event.target.value){
+        this.setState({yMax: indicator_list[key]})
+      }
+    }
   },
 
 
   render() {
-    const {dataX, dataY, chartHighlight, selectorX, selectorY, value} = this.state;
+    const {dataX, dataY, chartHighlight, selectorX, selectorY, value, xMax, yMax} = this.state;
     // console.log(dataX)
     return (
         <div className='main'>
           <h1>Simple Scatter-Plot</h1>
-          <ScatterPlot dataX={dataX} dataY={dataY} highlight={chartHighlight} {...styles} />
+          <ScatterPlot dataX={dataX} dataY={dataY} highlight={chartHighlight} xMax={xMax} yMax={yMax} {...styles} />
           <div style={bar_style}>
             <Slider value={this.state.value}
               onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
-              min={1990} max={2015}
+              min={1980} max={2015}
             />
           </div>
           <div id='selector-x'>
             <label>
               X-AXIS:
               <select value={this.state.selectorX} onChange={this.handleSelectorXChange} >
-                <option value="gdp">gdp</option>
-                <option value="popdensity">popdensity</option>
+                <option value="gdp">GDP at Market Prices (current US$)</option>
+                <option value="popdensity">Population Density (per sq. km.)</option>
+                <option value="income_per_person">Income per person (fixed PPP$)</option>
+                <option value="life_expectancy">Life expectancy at birth (years)</option>
+                <option value="total_population">Total Population</option>
               </select>
             </label>
           </div>
@@ -119,8 +134,11 @@ const Chart = React.createClass({
             <label>
               Y-AXIS:
               <select value={this.state.selectorY} onChange={this.handleSelectorYChange} >
-                <option value="gdp">gdp</option>
-                <option value="popdensity">popdensity</option>
+              <option value="gdp">GDP at Market Prices (current US$)</option>
+              <option value="popdensity">Population Density (per sq. km.)</option>
+              <option value="income_per_person">Income per person (fixed PPP$)</option>
+              <option value="life_expectancy">Life expectancy at birth (years)</option>
+              <option value="total_population">Total Population</option>
               </select>
             </label>
           </div>
