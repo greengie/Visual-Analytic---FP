@@ -15,7 +15,8 @@ module.exports = function(app) {
 
   //define first router
   apiRoutes.get('/:selector/:year', _ourController.data);
-  // apiRoutes.get('/popdensity/:year', _ourController.popdensity);
+  apiRoutes.get('/m_in/:selector/:year', _ourController.migration_in);
+  apiRoutes.get('/m_out/:selector/:year', _ourController.migration_out);
   //tell the app to use apiRoutes
   //and set the base url to
   // localhost:3000/api
