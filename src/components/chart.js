@@ -15,9 +15,9 @@ require('rc-slider/assets/index.css');
 
 const Slider = require('rc-slider');
 const styles = {
-  width   : 1000,
-  height  : 400,
-  padding : 80,
+  width   : 1200,
+  height  : 500,
+  padding : 60,
 };
 
 const bar_style = {
@@ -115,7 +115,7 @@ const Chart = React.createClass({
     for(var key in indicator_list){
       // console.log(event.target)
       if(key === event.target.value){
-        // console.log("aaaa");
+        // this.setState({xMax: indicator_list[key]});
         if(this.state.scaling_x == "lin"){
           this.setState({xMax: indicator_list[key][0]});
         }
@@ -131,6 +131,7 @@ const Chart = React.createClass({
     this.getDataY(this.state.value, event.target.value);
     for(var key in indicator_list){
       if(key == event.target.value){
+        // this.setState({yMax: indicator_list[key]});
         if(this.state.scaling_y == "lin"){
           this.setState({yMax: indicator_list[key][0]});
         }

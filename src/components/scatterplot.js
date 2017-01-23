@@ -83,7 +83,7 @@ const ScatterPlot = React.createClass({
             // console.log(i);
             const className = highlight === d.country_name ? 'highlight' : '';
             return (
-              <circle key={i} className={className} r={7} fill={"#58ACFA"} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
+              <circle key={i} className={className} r={10} fill={"#58ACFA"} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
                   onMouseOver={this._handleHover.bind(this, d.country_name)}
                   onMouseOut={this._handleHover.bind(this, null)}
                 />
