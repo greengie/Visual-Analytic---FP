@@ -178,6 +178,8 @@ const Chart = React.createClass({
   },
   // handle scale linear-log for x axes
   handleScaleXChange(event) {
+    // console.log(this.state.dataX);
+    this.setState({correlation: this.pearson_correlation(this.state.dataX)});
     this.setState({scaling_x: event.target.value});
     if(this.state.scaling_x == "lin"){
       if(event.target.value == "log"){
@@ -203,6 +205,7 @@ const Chart = React.createClass({
   },
   // handle scale linear-log for y axes
   handleScaleYChange(event) {
+    this.setState({correlation: this.pearson_correlation(this.state.dataX)});
     this.setState({scaling_y: event.target.value});
     if(this.state.scaling_y == "lin"){
       if(event.target.value == "log"){
