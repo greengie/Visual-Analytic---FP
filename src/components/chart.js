@@ -44,13 +44,12 @@ const Chart = React.createClass({
     };
   },
   // for slider and indicator to get new X data
-  getDataX(value, selector) {
-      // console.log(this.state.selectorX);
+  getDataX(value, selector, scale_x) {
       // API_URL + selectX + value
       axios.get(API_URL + selector + '/' + value)
         .then(res => {
           const dataX = res.data;
-          if(this.state.scaling_x == "log"){
+          if(scale_x == "log"){
             for(var i=0;i < dataX.length;i++){
               if(dataX[i].data_value >= 1){
                 dataX[i].data_value = (Math.log(dataX[i].data_value))/(Math.log(2));
@@ -60,22 +59,23 @@ const Chart = React.createClass({
               }
             }
             this.setState({dataX});
+            this.setState({xMax: indicator_list[this.state.selectorX][1]});
             this.setState({correlation: this.pearson_correlation(dataX)});
           }
-          else if(this.state.scaling_x == "lin"){
+          else if(scale_x == "lin"){
             this.setState({dataX});
+            this.setState({xMax: indicator_list[this.state.selectorX][0]});
             this.setState({correlation: this.pearson_correlation(dataX)});
-            // console.log(dataX);
           }
         });
   },
   // for slider and indicator to get new Y data
-  getDataY(value, selector) {
+  getDataY(value, selector, scale_y) {
       // API_URL + selectY + value
       axios.get(API_URL + selector + '/' + value)
         .then(res => {
           const dataY = res.data;
-          if(this.state.scaling_y == "log"){
+          if(scale_y == "log"){
             for(var i=0;i < dataY.length;i++){
               if(dataY[i].data_value >= 1){
                 dataY[i].data_value = (Math.log(dataY[i].data_value))/(Math.log(2));
@@ -85,10 +85,12 @@ const Chart = React.createClass({
               }
             }
             this.setState({dataY});
+            this.setState({yMax: indicator_list[this.state.selectorY][1]});
             this.setState({correlation: this.pearson_correlation(this.state.dataX)});
           }
-          else if(this.state.scaling_x == "lin"){
+          else if(scale_y == "lin"){
             this.setState({dataY});
+            this.setState({yMax: indicator_list[this.state.selectorY][0]});
             this.setState({correlation: this.pearson_correlation(this.state.dataX)});
           }
         });
@@ -125,14 +127,11 @@ const Chart = React.createClass({
     const r = (((n*sum_xy)-(sum_x*sum_y))/(Math.sqrt(((n*sum_x2)-(sum_x*sum_x))*((n*sum_y2)-(sum_y*sum_y))))).toFixed(2);
     return r;
   },
-
   // handle slider changing
   onSliderChange(value) {
     this.setState({value,});
-    // this.setState({correlation: this.pearson_correlation()});
-    // this.setState({correlation: -0.56});
-    this.getDataX(value, this.state.selectorX);
-    this.getDataY(value, this.state.selectorY);
+    this.getDataX(value, this.state.selectorX, this.state.scaling_x);
+    this.getDataY(value, this.state.selectorY, this.state.scaling_y);
   },
   // handle slider after changing
   onAfterChange(value) {
@@ -141,14 +140,10 @@ const Chart = React.createClass({
   },
   // handle selector X
   handleSelectorXChange(event) {
-    // console.log(this.state.dataX);
     this.setState({selectorX: event.target.value});
-    // this.setState({correlation: this.pearson_correlation()});
-    this.getDataX(this.state.value, event.target.value);
+    this.getDataX(this.state.value, event.target.value, this.state.scaling_x);
     for(var key in indicator_list){
-      // console.log(event.target)
       if(key === event.target.value){
-        // this.setState({xMax: indicator_list[key]});
         if(this.state.scaling_x == "lin"){
           this.setState({xMax: indicator_list[key][0]});
         }
@@ -160,13 +155,10 @@ const Chart = React.createClass({
   },
   // handle selector Y
   handleSelectorYChange(event) {
-    // console.log(this.state.dataX);
     this.setState({selectorY: event.target.value});
-    // this.setState({correlation: this.pearson_correlation()});
-    this.getDataY(this.state.value, event.target.value);
+    this.getDataY(this.state.value, event.target.value, this.state.scaling_y);
     for(var key in indicator_list){
       if(key == event.target.value){
-        // this.setState({yMax: indicator_list[key]});
         if(this.state.scaling_y == "lin"){
           this.setState({yMax: indicator_list[key][0]});
         }
@@ -178,61 +170,17 @@ const Chart = React.createClass({
   },
   // handle scale linear-log for x axes
   handleScaleXChange(event) {
-    // console.log(this.state.dataX);
-    this.setState({correlation: this.pearson_correlation(this.state.dataX)});
     this.setState({scaling_x: event.target.value});
-    if(this.state.scaling_x == "lin"){
-      if(event.target.value == "log"){
-        for(var i=0;i<this.state.dataX.length;i++){
-          // console.log(Math.log(this.state.dataX[i].data_value)/Math.log(2));
-          if(this.state.dataX[i].data_value >= 1){
-            this.state.dataX[i].data_value = (Math.log(this.state.dataX[i].data_value))/(Math.log(2));
-            this.setState({xMax: indicator_list[this.state.selectorX][1]});
-          }
-        }
-      }
-    }
-    else if(this.state.scaling_x == "log"){
-      if(event.target.value == "lin"){
-        for(var i=0;i<this.state.dataX.length;i++){
-          if(this.state.dataX[i].data_value >= 1){
-            this.state.dataX[i].data_value = Math.pow(2, this.state.dataX[i].data_value);
-            this.setState({xMax: indicator_list[this.state.selectorX][0]});
-          }
-        }
-      }
-    }
+    this.getDataX(this.state.value, this.state.selectorX, event.target.value);
   },
   // handle scale linear-log for y axes
   handleScaleYChange(event) {
-    this.setState({correlation: this.pearson_correlation(this.state.dataX)});
     this.setState({scaling_y: event.target.value});
-    if(this.state.scaling_y == "lin"){
-      if(event.target.value == "log"){
-        for(var i=0;i<this.state.dataY.length;i++){
-          // console.log(Math.log(this.state.dataX[i].data_value)/Math.log(2));
-          if(this.state.dataY[i].data_value >= 1){
-            this.state.dataY[i].data_value = (Math.log(this.state.dataY[i].data_value))/(Math.log(2));
-            this.setState({yMax: indicator_list[this.state.selectorY][1]});
-          }
-        }
-      }
-    }
-    else if(this.state.scaling_y == "log"){
-      if(event.target.value == "lin"){
-        for(var i=0;i<this.state.dataY.length;i++){
-          if(this.state.dataY[i].data_value >= 1){
-            this.state.dataY[i].data_value = Math.pow(2, this.state.dataY[i].data_value);
-            this.setState({yMax: indicator_list[this.state.selectorY][0]});
-          }
-        }
-      }
-    }
+    this.getDataY(this.state.value, this.state.selectorY, event.target.value);
   },
-
+  // render
   render() {
     const {dataX, dataY, chartHighlight, selectorX, selectorY, value, xMax, yMax, scaling_x, scaling_y, correlation} = this.state;
-    // console.log(dataX);
     return (
         <div className='main'>
           <h1>My-Plot</h1>
