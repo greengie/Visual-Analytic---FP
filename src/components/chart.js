@@ -1,7 +1,7 @@
 import React from 'react';
 import Reflux from 'reflux';
 import axios from 'axios';
-// import Selector from './selector';
+import Selector from './selector';
 // import CustomizedSlider from './slider';
 import ScatterPlot from './scatterplot';
 import ChartStore from '../stores/ChartStore';
@@ -38,8 +38,8 @@ const Chart = React.createClass({
       selectorY: 'popdensity',
       xMax: indicator_list.gdp[0],
       yMax: indicator_list.popdensity[0],
-      scaling_x: "lin",
-      scaling_y: "lin",
+      scaling_x: 'lin',
+      scaling_y: 'lin',
       correlation: -0.03
     };
   },
@@ -197,26 +197,14 @@ const Chart = React.createClass({
           <div id='selector-x'>
             <label>
               X-AXIS:
-              <select value={this.state.selectorX} onChange={this.handleSelectorXChange} >
-                <option value="gdp">GDP at Market Prices (current US$)</option>
-                <option value="popdensity">Population Density (per sq. km.)</option>
-                <option value="income_per_person">Income per person (fixed PPP$)</option>
-                <option value="life_expectancy">Life expectancy at birth (years)</option>
-                <option value="total_population">Total Population</option>
-              </select>
+              <Selector selector={selectorX} handleSelectorChange={this.handleSelectorXChange} />
             </label>
             <Scaling scale={scaling_x} handleScaleChange={this.handleScaleXChange} />
           </div>
           <div id='selector-y'>
             <label>
               Y-AXIS:
-              <select value={this.state.selectorY} onChange={this.handleSelectorYChange} >
-              <option value="gdp">GDP at Market Prices (current US$)</option>
-              <option value="popdensity">Population Density (per sq. km.)</option>
-              <option value="income_per_person">Income per person (fixed PPP$)</option>
-              <option value="life_expectancy">Life expectancy at birth (years)</option>
-              <option value="total_population">Total Population</option>
-              </select>
+              <Selector selector={selectorY} handleSelectorChange={this.handleSelectorYChange} />
             </label>
             <Scaling scale={scaling_y} handleScaleChange={this.handleScaleYChange} />
           </div>
