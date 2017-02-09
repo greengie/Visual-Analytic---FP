@@ -48,15 +48,7 @@ const ScatterPlot = React.createClass({
     const padding = this.props.padding;
     const xMax = this.props.xMax;
     const yMax = this.props.yMax;
-    // const {data, width, height, padding} = this.props;
     const data = this.getDataXY(this.props.dataX, this.props.dataY);
-
-    // set up scales for radius and colour based on the min/max in the data set
-    // return the largest X coordinate from the data set
-    // const xMax = (data) => d3.max(data, (d) => d.data_value);
-
-    // return the largest Y coordinate from the data set
-    // const yMax = (data) => d3.max(data, (d) => d.data_value_y);
 
     //return a function that "scales" X coordinates from the data to fit the chart.
     const xScale = d3.scale.linear().domain([0, xMax]).range([padding, width - padding*2]);
@@ -80,10 +72,10 @@ const ScatterPlot = React.createClass({
       <div>
         <svg ref='svg' width={width} height={height} className='chart scatter-plot'>
           {data.map((d, i) => {
-            // console.log(i);
+            // console.log(d);
             const className = highlight === d.country_name ? 'highlight' : '';
             return (
-              <circle key={i} className={className} r={10} fill={"#58ACFA"} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
+              <circle key={i} className={className} r={10} fill={d.color} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
                   onMouseOver={this._handleHover.bind(this, d.country_name)}
                   onMouseOut={this._handleHover.bind(this, null)}
                 />
