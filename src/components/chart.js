@@ -141,7 +141,8 @@ const Chart = React.createClass({
   // handle selector X
   handleSelectorXChange(event) {
     this.setState({selectorX: event.target.value});
-    this.getDataX(this.state.value, event.target.value, this.state.scaling_x);
+    this.getDataX(this.state.value, event.target.value, indicator_list[event.target.value][4]);
+    this.setState({scaling_x: indicator_list[event.target.value][4]});
     for(var key in indicator_list){
       if(key === event.target.value){
         if(this.state.scaling_x == "lin"){
@@ -156,7 +157,8 @@ const Chart = React.createClass({
   // handle selector Y
   handleSelectorYChange(event) {
     this.setState({selectorY: event.target.value});
-    this.getDataY(this.state.value, event.target.value, this.state.scaling_y);
+    this.getDataY(this.state.value, event.target.value, indicator_list[event.target.value][4]);
+    this.setState({scaling_y: indicator_list[event.target.value][4]});
     for(var key in indicator_list){
       if(key == event.target.value){
         if(this.state.scaling_y == "lin"){
