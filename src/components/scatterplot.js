@@ -3,24 +3,13 @@ import d3 from 'd3';
 import ChartActions from '../actions/ChartActions';
 // import XYAxis from './x-y-axis';
 import Axis from './axis';
-
+import Dot from './dot';
 require('../assets/stylesheets/Scatterplot.css');
 
-const ScatterPlot = React.createClass({
-  propTypes: {
-    dataX: React.PropTypes.array.isRequired,
-    dataY: React.PropTypes.array.isRequired,
-    width: React.PropTypes.number.isRequired,
-    height: React.PropTypes.number.isRequired,
-    padding: React.PropTypes.number.isRequired,
-    highlight: React.PropTypes.string
-  },
-
-  _handleHover(d) {
-    // console.log(d);
-    // send an action indicating which data point to highlight
-    ChartActions.highlight(d);
-  },
+export default class ScatterPlot extends React.Component{
+  constructor(props) {
+    super(props);
+  }
 
   getDataXY(dataX, dataY) {
     const dataXY = dataX;
@@ -38,18 +27,11 @@ const ScatterPlot = React.createClass({
       }
     }
     return dataXY;
-  },
+  }
 
-  render() {
-    // console.log(this.props.dataX);
-    const highlight = this.props.highlight;
-    const width = this.props.width;
-    const height = this.props.height;
-    const padding = this.props.padding;
-    const xMax = this.props.xMax;
-    const yMax = this.props.yMax;
-    const data = this.getDataXY(this.props.dataX, this.props.dataY);
-
+  render(){
+    const {dataX, dataY, width, height, padding, xMax, yMax} = this.props;
+    const data = this.getDataXY(dataX, dataY);
     //return a function that "scales" X coordinates from the data to fit the chart.
     const xScale = d3.scale.linear().domain([0, xMax]).range([padding, width - padding*2]);
 
@@ -72,13 +54,8 @@ const ScatterPlot = React.createClass({
       <div>
         <svg ref='svg' width={width} height={height} className='chart scatter-plot'>
           {data.map((d, i) => {
-            // console.log(d);
-            const className = highlight === d.country_name ? 'highlight' : '';
             return (
-              <circle key={i} className={className} r={10} fill={d.color} cx={xScale(d.data_value)} cy={yScale(d.data_value_y)}
-                  onMouseOver={this._handleHover.bind(this, d.country_name)}
-                  onMouseOut={this._handleHover.bind(this, null)}
-                />
+              <Dot key={d.country_code} x={xScale(d.data_value)} y={yScale(d.data_value_y)} r={10} color={d.color} name={d.country_name} real_x={d.data_value} real_y={d.data_value_y}/>
             );
           })}
           <g className="xy-axis">
@@ -89,6 +66,4 @@ const ScatterPlot = React.createClass({
       </div>
     );
   }
-});
-
-export default ScatterPlot;
+}

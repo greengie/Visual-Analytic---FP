@@ -2,9 +2,7 @@ import React from 'react';
 import Reflux from 'reflux';
 import axios from 'axios';
 import Selector from './selector';
-// import CustomizedSlider from './slider';
 import ScatterPlot from './scatterplot';
-import ChartStore from '../stores/ChartStore';
 import gdp_2010 from '../data/gdp_2010';
 import popdensity_2010 from '../data/popdensity_2010';
 import indicator_list from '../data/indicator_list';
@@ -26,9 +24,6 @@ const bar_style = {
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 const Chart = React.createClass({
-  mixins: [
-    Reflux.ListenerMixin
-  ],
   // Init InitialState
   getInitialState() {
     return {dataX: gdp_2010,
@@ -58,12 +53,12 @@ const Chart = React.createClass({
                 dataX[i].data_value = (dataX[i].data_value);
               }
             }
-            this.setState({dataX});
+            this.setState({dataX: dataX});
             this.setState({xMax: indicator_list[this.state.selectorX][1]});
             this.setState({correlation: this.pearson_correlation(dataX)});
           }
           else if(scale_x == "lin"){
-            this.setState({dataX});
+            this.setState({dataX: dataX});
             this.setState({xMax: indicator_list[this.state.selectorX][0]});
             this.setState({correlation: this.pearson_correlation(dataX)});
           }
@@ -84,26 +79,17 @@ const Chart = React.createClass({
                 dataY[i].data_value = (dataY[i].data_value);
               }
             }
-            this.setState({dataY});
+            this.setState({dataY: dataY});
             this.setState({yMax: indicator_list[this.state.selectorY][1]});
             this.setState({correlation: this.pearson_correlation(this.state.dataX)});
           }
           else if(scale_y == "lin"){
-            this.setState({dataY});
+            this.setState({dataY: dataY});
             this.setState({yMax: indicator_list[this.state.selectorY][0]});
             this.setState({correlation: this.pearson_correlation(this.state.dataX)});
           }
         });
     },
-
-  componentDidMount() {
-    this.listenTo(ChartStore, this._onChartStoreChange);
-  },
-
-  _onChartStoreChange(payload) {
-    console.log(payload);
-    this.setState({chartHighlight: payload.highlight});
-  },
 
   // find correlation value
   pearson_correlation(data){
@@ -136,7 +122,6 @@ const Chart = React.createClass({
   // handle slider after changing
   onAfterChange(value) {
     console.log(this.state);
-    // console.log(value); //eslint-disable-line
   },
   // handle selector X
   handleSelectorXChange(event) {
@@ -182,11 +167,12 @@ const Chart = React.createClass({
   },
   // render
   render() {
-    const {dataX, dataY, chartHighlight, selectorX, selectorY, value, xMax, yMax, scaling_x, scaling_y, correlation} = this.state;
+    const {dataX, dataY, selectorX, selectorY, value, xMax, yMax, scaling_x, scaling_y, correlation} = this.state;
+    // console.log(dataX);
     return (
         <div className='main'>
           <h1>My-Plot</h1>
-          <ScatterPlot dataX={dataX} dataY={dataY} highlight={chartHighlight} xMax={xMax} yMax={yMax} {...styles} />
+          <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} {...styles} />
           <div className='year-slider' style={bar_style}>
             <Slider value={this.state.value}
               onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
