@@ -123,37 +123,29 @@ const Chart = React.createClass({
   onAfterChange(value) {
     console.log(this.state);
   },
+  //set yearMin
+  getyearMin(){
+    console.log(Math.max(indicator_list[this.state.selectorX][2],indicator_list[this.state.selectorY][2]));
+    var yearMin = Math.max(indicator_list[this.state.selectorX][2],indicator_list[this.state.selectorY][2]);
+    return yearMin;
+  },
+  //set yearMax
+  getyearMax(){
+    console.log(Math.min(indicator_list[this.state.selectorX][3],indicator_list[this.state.selectorY][3]));
+    var yearMax = Math.min(indicator_list[this.state.selectorX][3],indicator_list[this.state.selectorY][3]);
+    return yearMax;
+  },
   // handle selector X
   handleSelectorXChange(event) {
     this.setState({selectorX: event.target.value});
     this.getDataX(this.state.value, event.target.value, indicator_list[event.target.value][4]);
     this.setState({scaling_x: indicator_list[event.target.value][4]});
-    for(var key in indicator_list){
-      if(key === event.target.value){
-        if(this.state.scaling_x == "lin"){
-          this.setState({xMax: indicator_list[key][0]});
-        }
-        else if(this.state.scaling_x == "log"){
-          this.setState({xMax: indicator_list[key][1]});
-        }
-      }
-    }
   },
   // handle selector Y
   handleSelectorYChange(event) {
     this.setState({selectorY: event.target.value});
     this.getDataY(this.state.value, event.target.value, indicator_list[event.target.value][4]);
     this.setState({scaling_y: indicator_list[event.target.value][4]});
-    for(var key in indicator_list){
-      if(key == event.target.value){
-        if(this.state.scaling_y == "lin"){
-          this.setState({yMax: indicator_list[key][0]});
-        }
-        else if(this.state.scaling_y == "log"){
-          this.setState({yMax: indicator_list[key][1]});
-        }
-      }
-    }
   },
   // handle scale linear-log for x axes
   handleScaleXChange(event) {
@@ -168,19 +160,18 @@ const Chart = React.createClass({
   // render
   render() {
     const {dataX, dataY, selectorX, selectorY, value, xMax, yMax, scaling_x, scaling_y, correlation} = this.state;
-    // console.log(dataX);
     return (
         <div className='main'>
           <h1>My-Plot</h1>
           <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} {...styles} />
           <div className='year-slider' style={bar_style}>
-            <Slider value={this.state.value}
+            <Slider value={value}
               onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
-              min={1980} max={2015}
+              min={this.getyearMin()} max={this.getyearMax()}
             />
           </div>
           <div className='correlation-slider' style={bar_style}>
-            <Slider value={this.state.correlation} min={-1} max={1} step={0.01} />
+            <Slider value={correlation} min={-1} max={1} step={0.01} />
           </div>
           <div id='selector-x'>
             <label>

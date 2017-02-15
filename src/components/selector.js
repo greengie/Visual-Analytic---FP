@@ -14,6 +14,7 @@ const Selector = React.createClass({
         <option value="income_per_person">Income per person (fixed PPP$)</option>
         <option value="life_expectancy">Life expectancy at birth (years)</option>
         <option value="total_population">Total Population</option>
+        <option value="expense_on_health">Total Expenditure On Health (PPP int. $)</option>
       </select>
     );
   }
