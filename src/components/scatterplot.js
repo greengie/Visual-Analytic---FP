@@ -1,7 +1,6 @@
 import React from 'react';
 import d3 from 'd3';
 import ChartActions from '../actions/ChartActions';
-// import XYAxis from './x-y-axis';
 import Axis from './axis';
 import Dot from './dot';
 require('../assets/stylesheets/Scatterplot.css');
@@ -59,8 +58,8 @@ export default class ScatterPlot extends React.Component{
             );
           })}
           <g className="xy-axis">
-            <Axis {...xSettings}/>
-            <Axis {...ySettings}/>
+            <Axis type={1} {...xSettings}/>
+            <Axis type={1} {...ySettings}/>
           </g>
         </svg>
       </div>

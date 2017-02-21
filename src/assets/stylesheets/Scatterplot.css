@@ -43,9 +43,3 @@ svg {
   font-size: 9px;
   font-weight: bold;
 }
-
-.controls button {
-  display: block;
-  margin: 4em auto 4em auto;
-  background-color: 'aquawhite';
-}
