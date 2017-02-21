@@ -1,8 +1,8 @@
 # Visual-Analytic---FP
-#   version 0.6 now!!!!!
+#   version 0.62 now!!!!!
 #     can scale in log and linear
 #     can slide to change year
-#     can view correlation
+#     can view correlation in linechart 
 #     can do some action with bubble
 #     separate bubble to 6 continent
 #     5 indicator now
