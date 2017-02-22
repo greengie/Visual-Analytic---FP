@@ -50,7 +50,7 @@ const Chart = React.createClass({
   // for slider and indicator to get new X data
   getDataX(value, selector, scale_x) {
       // API_URL + selectX + value
-      axios.get(API_URL + selector + '/' + scale_x + '/' + value)
+      axios.get(API_URL + 'data/' + selector + '/' + scale_x + '/' + value)
         .then(res => {
           this.setState({dataX: res.data});
           if(scale_x == "log"){
@@ -64,7 +64,7 @@ const Chart = React.createClass({
   // for slider and indicator to get new Y data
   getDataY(value, selector, scale_y) {
       // API_URL + selectY + value
-      axios.get(API_URL + selector + '/' + scale_y + '/' + value)
+      axios.get(API_URL + 'data/' + selector + '/' + scale_y + '/' + value)
         .then(res => {
           this.setState({dataY: res.data});
           if(scale_y == "log"){

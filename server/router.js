@@ -14,9 +14,8 @@ module.exports = function(app) {
   const apiRoutes = express.Router();
 
   //define first router
-  apiRoutes.get('/:selector/:scale/:year', _ourController.data);
-  apiRoutes.get('/m_in/:selector/:year', _ourController.migration_in);
-  apiRoutes.get('/m_out/:selector/:year', _ourController.migration_out);
+  apiRoutes.get('/data/:selector/:scale/:year', _ourController.data);
+  apiRoutes.get('/data_migration/:selector/:year', _ourController.data_migration);
   apiRoutes.get('/correlation/:selectorX/:selectorY/:yearMin/:yearMax/:scale_x/:scale_y', _ourController.correlation);
   //tell the app to use apiRoutes
   //and set the base url to
