@@ -2,11 +2,15 @@ import React from 'react';
 import Reflux from 'reflux';
 import axios from 'axios';
 import Selector from './selector';
+import R_Selector from './selector-r';
 import ScatterPlot from './scatterplot';
 import gdp_2010 from '../data/gdp_2010';
 import popdensity_2010 from '../data/popdensity_2010';
+import total_migration_in_2010 from '../data/total_migration_in_2010';
 import indicator_list from '../data/indicator_list';
 import correlation_init from '../data/correlation_init';
+import cor_init_x from '../data/cor_init_x';
+import cor_init_y from '../data/cor_init_y';
 import Scaling from './scaling';
 import LineChart from './linechart';
 
@@ -16,11 +20,11 @@ const Slider = require('rc-slider');
 const styles = {
   width   : 1200,
   height  : 500,
-  padding : 60,
+  padding : 50,
 };
 
 const linestyles = {
-  width   : 1200,
+  width   : 600,
   height  : 500,
   padding : 50,
 };
@@ -36,15 +40,18 @@ const Chart = React.createClass({
   getInitialState() {
     return {dataX: gdp_2010,
       dataY: popdensity_2010,
+      dataR: total_migration_in_2010,
       value: 2010,
       selectorX: 'gdp',
       selectorY: 'popdensity',
+      selectorR: 'total_in',
       xMax: indicator_list.gdp[0],
       yMax: indicator_list.popdensity[0],
       scaling_x: 'lin',
       scaling_y: 'lin',
-      correlation: -0.03,
-      corData: correlation_init
+      corData: correlation_init,
+      corDataX: cor_init_x,
+      corDataY: cor_init_y
     };
   },
   // for slider and indicator to get new X data
@@ -76,17 +83,34 @@ const Chart = React.createClass({
         });
     },
 
-  getCorData(selector, type, scale_x, scale_y){
+  getDataR(value, selector){
+    axios.get(API_URL + 'data_migration/' + selector + '/' + value)
+      .then(res => {
+        this.setState({dataR: res.data});
+      });
+  },
+
+  getCorData(selector1, selector2, selector3, type, scale_x, scale_y, query_type){
     if(type == 'x'){
-      axios.get(API_URL + 'correlation/' + selector + '/' + this.state.selectorY + '/' + this.getyearMin(selector,'x')+ '/' + this.getyearMax(selector,'x') + '/' + scale_x + '/' + scale_y)
+      axios.get(API_URL + 'correlation/' + selector1 + '/' + selector2 + '/' + this.getyearMin(selector1,selector2,selector3,'getCor')+ '/' + this.getyearMax(selector1,selector2,selector3,'getCor') + '/' + scale_x + '/' + scale_y + '/' + query_type)
         .then(res => {
-          this.setState({corData: res.data});
+          if(query_type == '1'){
+            this.setState({corData: res.data});
+          }
+          else if (query_type == '2') {
+            this.setState({corDataX: res.data});
+          }
         });
     }
     else if (type == 'y') {
-      axios.get(API_URL + 'correlation/' + this.state.selectorX + '/' + selector + '/' + this.getyearMin(selector,'y')+ '/' + this.getyearMax(selector,'y') + '/' + scale_x + '/' + scale_y)
+      axios.get(API_URL + 'correlation/' + selector1 + '/' + selector2 + '/' + this.getyearMin(selector1,selector2,selector3,'getCor')+ '/' + this.getyearMax(selector1,selector2,selector3,'getCor') + '/' + scale_x + '/' + scale_y + '/' + query_type)
         .then(res => {
-          this.setState({corData: res.data});
+          if(query_type == '1'){
+            this.setState({corData: res.data});
+          }
+          else if(query_type == '2') {
+            this.setState({corDataY: res.data});
+          }
         });
     }
   },
@@ -95,34 +119,29 @@ const Chart = React.createClass({
     this.setState({value,});
     this.getDataX(value, this.state.selectorX, this.state.scaling_x);
     this.getDataY(value, this.state.selectorY, this.state.scaling_y);
+    this.getDataR(value, this.state.selectorR);
   },
   // handle slider after changing
   onAfterChange(value) {
     console.log(this.state);
   },
   //set yearMin
-  getyearMin(selector,type){
-    if(type == 'x'){
-      var yearMin = Math.max(indicator_list[selector][2],indicator_list[this.state.selectorY][2]);
-    }
-    else if (type == 'y'){
-      var yearMin = Math.max(indicator_list[this.state.selectorX][2],indicator_list[selector][2]);
+  getyearMin(selector1, selector2, selector3, type){
+    if(type == 'getCor'){
+      var yearMin = Math.max(indicator_list[selector1][2],indicator_list[selector2][2],indicator_list[selector3][2]);
     }
     else {
-      var yearMin = Math.max(indicator_list[this.state.selectorX][2],indicator_list[this.state.selectorY][2]);
+      var yearMin = Math.max(indicator_list[this.state.selectorX][2],indicator_list[this.state.selectorY][2],indicator_list[this.state.selectorR][2]);
     }
     return yearMin;
   },
   //set yearMax
-  getyearMax(selector, type){
-    if(type == 'x'){
-      var yearMax = Math.min(indicator_list[selector][3],indicator_list[this.state.selectorY][3]);
-    }
-    else if (type == 'y'){
-      var yearMax = Math.min(indicator_list[this.state.selectorX][3],indicator_list[selector][3]);
+  getyearMax(selector1, selector2, selector3, type){
+    if(type == 'getCor'){
+      var yearMax = Math.min(indicator_list[selector1][3],indicator_list[selector2][3],indicator_list[selector3][3]);
     }
     else {
-      var yearMax = Math.min(indicator_list[this.state.selectorX][3],indicator_list[this.state.selectorY][3]);
+      var yearMax = Math.min(indicator_list[this.state.selectorX][3],indicator_list[this.state.selectorY][3],indicator_list[this.state.selectorR][3]);
     }
     return yearMax;
   },
@@ -131,41 +150,61 @@ const Chart = React.createClass({
     this.setState({selectorX: event.target.value});
     this.getDataX(this.state.value, event.target.value, indicator_list[event.target.value][4]);
     this.setState({scaling_x: indicator_list[event.target.value][4]});
-    this.getCorData(event.target.value, 'x', indicator_list[event.target.value][4], this.state.scaling_y);
+    // get cor x and y
+    this.getCorData(event.target.value, this.state.selectorY, this.state.selectorR, 'x', indicator_list[event.target.value][4], this.state.scaling_y, 1);
+    // get cor r and x
+    this.getCorData(this.state.selectorR, event.target.value, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
+    // get cor r and y
+    this.getCorData(this.state.selectorR, this.state.selectorY, event.target.value, 'y', indicator_list[this.state.selectorR][4], this.state.scaling_y, 2);
   },
   // handle selector Y
   handleSelectorYChange(event) {
     this.setState({selectorY: event.target.value});
     this.getDataY(this.state.value, event.target.value, indicator_list[event.target.value][4]);
     this.setState({scaling_y: indicator_list[event.target.value][4]});
-    this.getCorData(event.target.value, 'y', this.state.scaling_x, indicator_list[event.target.value][4]);
+    // get cor x and y
+    this.getCorData(this.state.selectorX, event.target.value, this.state.selectorR, 'y', this.state.scaling_x, indicator_list[event.target.value][4], 1);
+    // get cor r and y
+    this.getCorData(this.state.selectorR, event.target.value, this.state.selectorX,'y', indicator_list[this.state.selectorR][4], this.state.scaling_y, 2);
+    // get cor r and x
+    this.getCorData(this.state.selectorR, this.state.selectorX, event.target.value,'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
+  },
+  // handel selector R
+  handleSelectorRChange(event) {
+    this.setState({selectorR: event.target.value});
+    this.getDataR(this.state.value, event.target.value);
+    // get cor r and x
+    this.getCorData(event.target.value, this.state.selectorX, this.state.selectorY, 'x', indicator_list[event.target.value][4], this.state.scaling_x, 2);
+    // get cor r and y
+    this.getCorData(event.target.value, this.state.selectorY, this.state.selectorX, 'y', indicator_list[event.target.value][4], this.state.scaling_y, 2);
   },
   // handle scale linear-log for x axes
   handleScaleXChange(event) {
     this.setState({scaling_x: event.target.value});
     this.getDataX(this.state.value, this.state.selectorX, event.target.value);
-    this.getCorData(this.state.selectorX, 'x', event.target.value, this.state.scaling_y);
+    // get cor x and y
+    this.getCorData(this.state.selectorX, this.state.selectorY, this.state.selectorR, 'x', event.target.value, this.state.scaling_y, 1);
+    // get cor r and x
+    this.getCorData(this.state.selectorR, this.state.selectorX, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], event.target.value, 2);
+    // get cor r and y
+    this.getCorData(this.state.selectorR, this.state.selectorY, this.state.selectorX, 'y', indicator_list[this.state.selectorR][4], this.state.scaling_y, 2);
   },
   // handle scale linear-log for y axes
   handleScaleYChange(event) {
     this.setState({scaling_y: event.target.value});
     this.getDataY(this.state.value, this.state.selectorY, event.target.value);
-    this.getCorData(this.state.selectorY, 'y', this.state.scaling_x, event.target.value);
+    // get cor x and y
+    this.getCorData(this.state.selectorX, this.state.selectorY, this.state.selectorR, 'y', event.target.value, this.state.scaling_x, 1);
+    // get cor r and y
+    this.getCorData(this.state.selectorR, this.state.selectorY, this.state.selectorX, 'y', indicator_list[this.state.selectorR][4], event.target.value, 2);
+    // get cor r and x
+    this.getCorData(this.state.selectorR, this.state.selectorX, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
   },
   // render
   render() {
-    const {dataX, dataY, selectorX, selectorY, value, xMax, yMax, scaling_x, scaling_y, corData} = this.state;
+    const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
         <div className='main'>
-          <h1>My-Plot</h1>
-          <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} {...styles} />
-          <div className='year-slider' style={bar_style}>
-            <Slider value={value}
-              onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
-              min={this.getyearMin()} max={this.getyearMax()}
-            />
-          </div>
-          <LineChart data={corData} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
           <div id='selector-x'>
             <label>
               X-AXIS:
@@ -179,6 +218,28 @@ const Chart = React.createClass({
               <Selector selector={selectorY} handleSelectorChange={this.handleSelectorYChange} />
             </label>
             <Scaling scale={scaling_y} handleScaleChange={this.handleScaleYChange} />
+          </div>
+          <div id='selector-r'>
+            <label>
+              R:
+              <R_Selector selector={selectorR} handleSelectorChange={this.handleSelectorRChange} />
+            </label>
+          </div>
+          <section class="container">
+            <div class="left-half">
+              <h1>ScatterPlot</h1>
+              <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} {...styles} />
+            </div>
+            <div class="right-half">
+              <h1>Correlation</h1>
+              <LineChart data={corData} dataA={corDataX} dataB={corDataY} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
+            </div>
+          </section>
+          <div className='year-slider' style={bar_style}>
+            <Slider value={value}
+              onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
+              min={this.getyearMin()} max={this.getyearMax()}
+            />
           </div>
         </div>
     );

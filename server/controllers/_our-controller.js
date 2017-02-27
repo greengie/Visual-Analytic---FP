@@ -25,11 +25,11 @@ exports.data = function(req, res, next) {
             log_result[i].data_value = (result[i].data_value);
           }
         }
-        console.log(log_result);
+        // console.log(log_result);
         res.status(200).json(log_result);
       }
       else if(scale == "lin"){
-        console.log(result);
+        // console.log(result);
         res.status(200).json(result);
       }
     })
@@ -42,9 +42,9 @@ exports.data = function(req, res, next) {
 exports.data_migration = function(req, res, next) {
   var year = req.params.year;
   var selector = req.params.selector;
-  Subjects.any("select iso_alpha3,country_name,year,color,$2~ from sum_migration where year=$1", [year, selector])
+  Subjects.any("select iso_alpha3 as country_code, country_name, year, color,$2~ as value from sum_migration where year=$1", [year, selector])
     .then(function (result) {
-      console.log(result);
+      // console.log(result);
       res.status(200).json(result);
     })
     .catch(function (error) {
@@ -53,23 +53,9 @@ exports.data_migration = function(req, res, next) {
     });
 }
 
-// exports.migration_out = function(req, res, next) {
-//   var year = req.params.year;
-//   var selector = req.params.selector;
-//   Subjects.any("select iso_alpha3 as country_code, country_list.country_name, year, sum($2~) as out_value, cont_color as color from migration_data, country_list where (migration_data.origin_country = country_list.country_name) and (year = $1) and (destination_country='Developed regions' or destination_country='Developing regions') GROUP BY country_list.iso_alpha3,year", [year, selector])
-//     .then(function (result) {
-//       console.log(result);
-//       res.status(200).json(result);
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//       res.status(404).json(error);
-//     });
-// }
-
 exports.correlation = function(req, res, next) {
   var options = {
-    args: [req.params.yearMin, req.params.yearMax, req.params.selectorX, req.params.selectorY, req.params.scale_x, req.params.scale_y]
+    args: [req.params.yearMin, req.params.yearMax, req.params.selectorX, req.params.selectorY, req.params.scale_x, req.params.scale_y, req.params.query_type]
   };
 
   var pyshell = new PythonShell('./test.py', options);
@@ -79,7 +65,7 @@ exports.correlation = function(req, res, next) {
     d = JSON.stringify(message);
     m = JSON.parse(d);
     obj = eval('(' + m + ')');
-    console.log(obj);
+    // console.log(obj);
     res.status(200).json(obj);
   });
 

@@ -16,7 +16,7 @@ module.exports = function(app) {
   //define first router
   apiRoutes.get('/data/:selector/:scale/:year', _ourController.data);
   apiRoutes.get('/data_migration/:selector/:year', _ourController.data_migration);
-  apiRoutes.get('/correlation/:selectorX/:selectorY/:yearMin/:yearMax/:scale_x/:scale_y', _ourController.correlation);
+  apiRoutes.get('/correlation/:selectorX/:selectorY/:yearMin/:yearMax/:scale_x/:scale_y/:query_type', _ourController.correlation);
   //tell the app to use apiRoutes
   //and set the base url to
   // localhost:3000/api

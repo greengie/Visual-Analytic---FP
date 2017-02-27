@@ -59,14 +59,18 @@ def main():
     selectorY = sys.argv[4]
     scale_x = sys.argv[5]
     scale_y = sys.argv[6]
-
+    query_type = sys.argv[7]
+    # print query_type
     conn = psycopg2.connect("dbname='giegie' user='postgres' host='128.199.99.233' password='0909527339Gie'")
     cur = conn.cursor()
     # select iso_alpha3 as country_code, country_list.country_name, year, value as data_value, cont_color as color from $2~, country_list where ($2~.country_name = country_list.country_name) and (year = $1) and (value is not null)
     # ($2~.country_name = country_list.country_name) and (year = $1)
     for i in range(yearMin, yearMax+1):
         # get X
-        query1 = "SELECT year, value FROM " + selectorX +", country_list WHERE (" + selectorX + ".country_name = country_list.country_name) and (year = " + str(i) + ");"
+        if(query_type == '1'):
+            query1 = "SELECT year, value FROM " + selectorX +", country_list WHERE (" + selectorX + ".country_name = country_list.country_name) and (year = " + str(i) + ");"
+        elif(query_type == '2'):
+            query1 = "SELECT year, " + selectorX + " as value FROM sum_migration WHERE (year = " + str(i) + ");"
         cur.execute(query1)
         dataX = cur.fetchall()
         if(scale_x == 'lin'):

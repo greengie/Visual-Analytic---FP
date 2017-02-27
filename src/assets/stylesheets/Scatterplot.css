@@ -8,7 +8,7 @@
   position: absolute;
   text-align: center;
   width: 100px;
-  height: 45px;
+  height: 55px;
   padding: 2px;
   font: 12px sans-serif;
   color: darkblue;
@@ -17,6 +17,27 @@
   border: 0px;
   border-radius: 8px;
   pointer-events: none;
+}
+
+/*div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}*/
+
+/* Pattern styles */
+.container {
+  display: flex;
+}
+
+.left-half {
+  flex: 1;
+  padding: 1rem;
+}
+
+.right-half {
+  flex: 1;
+  padding: 1rem;
 }
 
 h1 {
