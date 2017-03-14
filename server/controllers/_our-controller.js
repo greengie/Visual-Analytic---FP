@@ -5,6 +5,7 @@
 //============================
 const pgp = require('pg-promise')();
 const db = require('../config/db');
+// connection to postgresql
 const Subjects = pgp(db.urlSubjectViews);
 const PythonShell = require('python-shell');
 
@@ -67,6 +68,23 @@ exports.correlation = function(req, res, next) {
     obj = eval('(' + m + ')');
     // console.log(obj);
     res.status(200).json(obj);
+  });
+
+  pyshell.end(function (err) {
+    if (err) throw err;
+    // console.log('finished');
+  });
+}
+
+exports.prediction = function(req, res, next){
+  var pyshell = new PythonShell('./run-model.py');
+  pyshell.on('message', function (message) {
+    // received a message sent from the Python script (a simple "print" statement)
+    // d = JSON.stringify(message);
+    // m = JSON.parse(d);
+    // obj = eval('(' + m + ')');
+    console.log(message);
+    // res.status(200).json(message);
   });
 
   pyshell.end(function (err) {

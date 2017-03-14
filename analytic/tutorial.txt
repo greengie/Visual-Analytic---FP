@@ -1,0 +1,25 @@
+CLASSPATH=/home/greengie/weka-3-8-0/weka.jar:$CLASSPATH
+
+java -cp "$CLASSPATH:./weka.jar" -Xmx500m weka.gui.explorer.Explorer
+
+java -cp "CLASSPATH=/home/greengie/weka-3-8-0/weka.jar" -Xmx500m weka.gui.explorer.Explorer
+
+java -cp "$CLASSPATH:/home/greengie/weka-3-8-0/weka.jar" -Xmx500m weka.gui.explorer.Explorer
+
+java -cp "$CLASSPATH:/home/greengie/weka-3-8-0/weka.jar" -Xmx500m weka.gui.explorer.Explorer
+
+/home/giegie/mytest/test-api-scatter/analytic/test_data/arff/
+/home/giegie/mytest/test-api-scatter/analytic/test_data/csv/
+
+// Configuration Random Committee
+weka.classifiers.meta.RandomCommittee -S 1 -num-slots 1 -I 10 -W weka.classifiers.trees.RandomTree -- -K 2 -M 1.0 -V 0.001 -S 1 -B
+
+// pre-processing
+java -cp "$CLASSPATH:./weka.jar" -Xmx500m weka.filters.unsupervised.instance.RemoveWithValues -i /home/giegie/mytest/test-api-scatter/analytic/test_data/arff/data.arff -o /home/giegie/mytest/test-api-scatter/analytic/test_data/arff/data-preprocess.arff -S 0.0 -C last -L last -M
+
+//train
+java -cp "$CLASSPATH:/home/giegie/weka-3-8-1/weka.jar" -Xmx1024m weka.classifiers.meta.RandomCommittee -t /home/giegie/mytest/test-api-scatter/analytic/train_data/data-train.arff -d /home/giegie/mytest/test-api-scatter/analytic/model/model-m_in-v1.model -p 0 -S 1 -num-slots 1 -I 10 -W weka.classifiers.trees.RandomTree -- -K 2 -M 1.0 -V 0.001 -S 1 -B
+
+
+//use model
+java -cp "$CLASSPATH:/home/giegie/weka-3-8-1/weka.jar" -Xmx500m weka.classifiers.meta.RandomCommittee -classifications weka.classifiers.evaluation.output.prediction.CSV -T /home/giegie/mytest/test-api-scatter/analytic/test_data/arff/data-test.arff -l /home/giegie/mytest/test-api-scatter/analytic/model/model-m_in-v1.model -p 0 |tail -n+6 |head -n -1

@@ -13,6 +13,7 @@ import cor_init_x from '../data/cor_init_x';
 import cor_init_y from '../data/cor_init_y';
 import Scaling from './scaling';
 import LineChart from './linechart';
+const Router = require('react-router');
 
 require('rc-slider/assets/index.css');
 
@@ -35,6 +36,7 @@ const bar_style = {
 };
 
 const API_URL = 'http://128.199.99.233:3000/api/';
+
 const Chart = React.createClass({
   // Init InitialState
   getInitialState() {
@@ -200,11 +202,25 @@ const Chart = React.createClass({
     // get cor r and x
     this.getCorData(this.state.selectorR, this.state.selectorX, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
   },
+  logoutFacebook(){
+    FB.logout(function(response) {
+      console.log('press button');
+      Router.browserHistory.push('/login');
+    });
+  },
+  checkStatusFB(){
+    FB.getLoginStatus(function(response) {
+      console.log(response);
+    }.bind(this));
+  },
   // render
   render() {
     const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
         <div className='main'>
+          <div>
+            <button id='logout' type='button' onClick={this.logoutFacebook} >Logout</button>
+          </div>
           <div id='selector-x'>
             <label>
               X-AXIS:

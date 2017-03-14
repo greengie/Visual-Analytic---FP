@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 
-import Chart from './chart';
+import Navigation from './navigation';
+// import Chart from './chart';
 
 export default class App extends Component {
   render() {
     return (
       <div>
-        <Chart />
+        <Navigation />
+        {this.props.children}
       </div>
     );
   }
