@@ -215,11 +215,16 @@ const Chart = React.createClass({
   },
   // render
   render() {
+    console.log(this.props);
     const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
         <div className='main'>
           <div>
             <button id='logout' type='button' onClick={this.logoutFacebook} >Logout</button>
+          </div>
+          <div>
+            <h2>Welcomes</h2>
+            <p>{this.props.location.query.first_name} {this.props.location.query.last_name}</p>
           </div>
           <div id='selector-x'>
             <label>
