@@ -30,6 +30,12 @@ const linestyles = {
   padding : 50,
 };
 
+const styles2 = {
+  width   : 600,
+  height  : 500,
+  padding : 50,
+};
+
 const bar_style = {
   width   : 1200,
   margin  : 50
@@ -202,30 +208,17 @@ const Chart = React.createClass({
     // get cor r and x
     this.getCorData(this.state.selectorR, this.state.selectorX, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
   },
-  logoutFacebook(){
-    FB.logout(function(response) {
-      console.log('press button');
-      Router.browserHistory.push('/login');
-    });
-  },
-  checkStatusFB(){
-    FB.getLoginStatus(function(response) {
-      console.log(response);
-    }.bind(this));
-  },
+  // logoutFacebook(){
+  //   FB.logout(function(response) {
+  //     console.log('press button');
+  //     Router.browserHistory.push('/');
+  //   });
+  // },
   // render
   render() {
-    console.log(this.props);
     const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
         <div className='main'>
-          <div>
-            <button id='logout' type='button' onClick={this.logoutFacebook} >Logout</button>
-          </div>
-          <div>
-            <h2>Welcomes</h2>
-            <p>{this.props.location.query.first_name} {this.props.location.query.last_name}</p>
-          </div>
           <div id='selector-x'>
             <label>
               X-AXIS:
@@ -250,10 +243,20 @@ const Chart = React.createClass({
             <div class="left-half">
               <h1>ScatterPlot</h1>
               <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} {...styles} />
+              <div class='line-chart-1'>
+                <h2>Correlation of X and Y</h2>
+                <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...styles2} />
+              </div>
             </div>
             <div class="right-half">
-              <h1>Correlation</h1>
-              <LineChart data={corData} dataA={corDataX} dataB={corDataY} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
+              <div class='line-chart-2'>
+                <h2>Correlation of R and X</h2>
+                <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
+              </div>
+              <div class='line-chart-3'>
+                <h2>Correlation of R and Y</h2>
+                <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
+              </div>
             </div>
           </section>
           <div className='year-slider' style={bar_style}>

@@ -5,9 +5,14 @@
 //============================
 const pgp = require('pg-promise')();
 const db = require('../config/db');
+const atob = require('atob');
 // connection to postgresql
 const Subjects = pgp(db.urlSubjectViews);
 const PythonShell = require('python-shell');
+// const multer = require('multer');
+// const maxsize = 25000000; //limit 25 mb
+// const upload = multer({dest: 'uploads/', limits:{fileSize: maxsize}})
+const fs = require('fs');
 
 exports.data = function(req, res, next) {
   // console.log(req.params.selector)
@@ -100,9 +105,9 @@ exports.checkUserAreInDB = function(req,res,next){
     .then(function (result) {
       // console.log(result[0].exists)
       if(result[0].exists === false){
-        Subjects.any("insert into userdata values($1,$2,$3);", [req.body.userID,req.body.first_name,req.body.last_name])
+        Subjects.any("insert into userdata values($1,$2,$3,0);", [req.body.userID,req.body.first_name,req.body.last_name])
         .then(function (result1) {
-          Subjects.any("select first_name,last_name from userdata where id=$1;", [req.body.userID])
+          Subjects.any("select id,first_name,last_name,num_file from userdata where id=$1;", [req.body.userID])
           .then(function (result2) {
             console.log(result2);
             res.status(200).json(result2);
@@ -118,7 +123,7 @@ exports.checkUserAreInDB = function(req,res,next){
         });
       }
       else{
-        Subjects.any("select first_name,last_name from userdata where id=$1;", [req.body.userID])
+        Subjects.any("select id,first_name,last_name,num_file from userdata where id=$1;", [req.body.userID])
         .then(function (result3) {
           console.log(result3);
           res.status(200).json(result3);
@@ -135,4 +140,44 @@ exports.checkUserAreInDB = function(req,res,next){
     });
   // console.log(res);
   // console.log(next);
+}
+
+exports.uploadCSV = function(req, res, next){
+  // console.log(req.files[0]);
+  // console.log(typeof req.body.file_num === 'string');
+  // var update_file_num = req.body.file_num+1;
+  var dir = './uploads/'+req.body.fileid;
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  }
+
+  fs.writeFile(dir+'/'+req.body.filename, req.body.data_text, function(err) {
+    if(err) {
+      console.log(err);
+      res.status(404).json(err);
+    }
+    else{
+      Subjects.any("update userdata set num_file=$1 where id=$2", [parseInt(req.body.file_num)+1,req.body.fileid])
+      .then(function (result) {
+        res.status(200).json(parseInt(req.body.file_num)+1);
+      })
+      .catch(function (error){
+        console.log(error);
+        res.status(404).json(error);
+      });
+      console.log("The file was saved!");
+    }
+  });
+}
+
+exports.getFileLimit = function(req, res, next){
+  var id = req.params.id;
+  Subjects.any("select num_file from userdata where id=$1", [id])
+    .then(function (result) {
+      res.status(200).json(result);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(404).json(error);
+    });
 }

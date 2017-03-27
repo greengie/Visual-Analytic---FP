@@ -11,6 +11,8 @@ import { Route, IndexRoute } from 'react-router';
 import App from './components/app';
 import Chart from './components/chart';
 import Login from './components/login';
+import Main from './components/main';
+import Upload from './components/upload';
 
 //====================
 // Define our routes
@@ -18,7 +20,9 @@ import Login from './components/login';
 export default (
   <Route path='/' component={App}>
     <IndexRoute component={Login} />
-    <Route path='chart' component={Chart} />
-    <Route path='login' component={Login} />
+    <Route path='main' component={Main}>
+      <Route path='chart' component={Chart} />
+      <Route path='upload/:userid' component={Upload} />
+    </Route>
   </Route>
 );

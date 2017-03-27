@@ -41,7 +41,7 @@ class Login extends Component {
           })
           .then(function (response) {
             Router.browserHistory.push({
-              pathname: '/chart',
+              pathname: '/main',
               query: response.data[0]
             });
             // console.log(response.data[0]);

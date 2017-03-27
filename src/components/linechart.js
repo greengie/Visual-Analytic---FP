@@ -19,10 +19,10 @@ export default class LineChart extends React.Component{
   }
 
   render(){
-    const {data, dataA, dataB, width, height, padding, yearMin, yearMax, year} = this.props;
+    const {data, width, height, padding, yearMin, yearMax, year, path} = this.props;
     const rY = this.getY(data,year);
-    const rYA = this.getY(dataA, year);
-    const rYB = this.getY(dataB, year);
+    // const rYA = this.getY(dataA, year);
+    // const rYB = this.getY(dataB, year);
     const line = d3.svg.line()
       .x((d) => xScale(d['y']))
       .y((d) => yScale(d['x']));
@@ -44,18 +44,12 @@ export default class LineChart extends React.Component{
     };
 
     const highlightMark1 = <circle cx={xScale(year)} cy={yScale(rY)} r={4} className='highlight-mark-1' />;
-    const highlightMark2 = <circle cx={xScale(year)} cy={yScale(rYA)} r={4} className='highlight-mark-1' />;
-    const highlightMark3 = <circle cx={xScale(year)} cy={yScale(rYB)} r={4} className='highlight-mark-1' />;
 
     return(
       <div>
         <svg ref='svg' width={width} height={height} className='chart linechart'>
-          <path className='path1' d={line(data)} />
+          <path className={path} d={line(data)} />
           {highlightMark1}
-          <path className='path2' d={line(dataA)} />
-          {highlightMark2}
-          <path className='path3' d={line(dataB)} />
-          {highlightMark3}
           <g className="xy-axis">
             <Axis type={2} {...xSettings}/>
             <Axis type={2} {...ySettings}/>

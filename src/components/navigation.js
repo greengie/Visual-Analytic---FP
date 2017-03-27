@@ -9,6 +9,10 @@ import React, { Component } from "react";
  */
 export default class Navigation extends Component {
 
+  constructor(props) {
+    super(props);
+    console.log(this.props);
+  }
   /**
    * Component render method, required and displays the navigation menu
    * @returns { ReactElement }
@@ -16,6 +20,11 @@ export default class Navigation extends Component {
   render() {
     return (
       <div className="frame bit-1 navigation_container">
+      <h3 className="bit-40"><Link to="/main">Visual Analytic</Link></h3>
+        <div className="nav_menu">
+          <li key={100}><Link to="/main/chart">Chart</Link></li>
+          <li key={101}><Link to={'/main/upload/'+this.props.id}>Upload</Link></li>
+        </div>
       </div>
     );
   }
