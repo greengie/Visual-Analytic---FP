@@ -1,4 +1,3 @@
-//============================
 // Define the functions that will be called
 // when someone accesses the route on our
 // api
@@ -82,14 +81,17 @@ exports.correlation = function(req, res, next) {
 }
 
 exports.prediction = function(req, res, next){
-  var pyshell = new PythonShell('./run-model.py');
+  var options = {
+    args: [req.params.userid, req.params.fileid]
+  };
+  var pyshell = new PythonShell('./regression-data.py', options);
   pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
-    // d = JSON.stringify(message);
-    // m = JSON.parse(d);
-    // obj = eval('(' + m + ')');
+    d = JSON.stringify(message);
+    m = JSON.parse(d);
+    obj = eval('(' + m + ')');
     console.log(message);
-    // res.status(200).json(message);
+    res.status(200).json(obj);
   });
 
   pyshell.end(function (err) {
@@ -157,6 +159,26 @@ exports.uploadCSV = function(req, res, next){
       res.status(404).json(err);
     }
     else{
+      var file_path = '/home/giegie/mytest/test-api-scatter/server/uploads/'
+      var options = {
+        args: [file_path, req.body.fileid, req.body.filename]
+      };
+
+      var pyshell = new PythonShell('./get-cor-matrix.py', options);
+
+      pyshell.on('message', function (message) {
+        // received a message sent from the Python script (a simple "print" statement)
+        // d = JSON.stringify(message);
+        // m = JSON.parse(d);
+        // obj = eval('(' + m + ')');
+        console.log(message);
+      });
+
+      pyshell.end(function (err) {
+        if (err) throw err;
+        console.log('finished-correaltion-matrix');
+      });
+      // update userdata
       Subjects.any("update userdata set num_file=$1 where id=$2", [parseInt(req.body.file_num)+1,req.body.fileid])
       .then(function (result) {
         res.status(200).json(parseInt(req.body.file_num)+1);
@@ -165,6 +187,7 @@ exports.uploadCSV = function(req, res, next){
         console.log(error);
         res.status(404).json(error);
       });
+
       console.log("The file was saved!");
     }
   });

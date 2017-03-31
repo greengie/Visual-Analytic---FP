@@ -24,6 +24,7 @@ export default class Navigation extends Component {
         <div className="nav_menu">
           <li key={100}><Link to="/main/chart">Chart</Link></li>
           <li key={101}><Link to={'/main/upload/'+this.props.id}>Upload</Link></li>
+          <li key={102}><Link to={'/main/regression/'+this.props.id}>Regression</Link></li>
         </div>
       </div>
     );

@@ -20,7 +20,7 @@ module.exports = function(app) {
   apiRoutes.get('/data/:selector/:scale/:year', _ourController.data);
   apiRoutes.get('/data_migration/:selector/:year', _ourController.data_migration);
   apiRoutes.get('/correlation/:selectorX/:selectorY/:yearMin/:yearMax/:scale_x/:scale_y/:query_type', _ourController.correlation);
-  apiRoutes.get('/prediction', _ourController.prediction);
+  apiRoutes.get('/prediction/:userid/:fileid', _ourController.prediction);
   apiRoutes.post('/user', _ourController.checkUserAreInDB);
   apiRoutes.get('/limit/:id', _ourController.getFileLimit);
   apiRoutes.post('/upload', _ourController.uploadCSV);

@@ -50,7 +50,7 @@ class Upload extends Component {
             dataType: 'json',
           });
           promise.done(function(data){
-            // console.log(data);
+            console.log(data);
             _this.setState({
               processing: false,
               uploaded_uri: data.uri,
