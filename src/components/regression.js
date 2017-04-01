@@ -9,10 +9,19 @@ class Regression extends Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = {value: 'coconut', showCorMatrix: false};
+    this.state = {showCorMatrix: false, file_list: []};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getFileList(){
+    axios.get(API_URL + 'list/' + this.props.params.userid)
+      .then(res => {
+        this.setState({value: res.data[0]});
+        this.setState({file_list: res.data});
+        // return res.data[0].num_file;
+      });
   }
 
   handleChange(event) {
@@ -22,12 +31,19 @@ class Regression extends Component {
 
   handleSubmit(event) {
     this.setState({showCorMatrix: true});
+    console.log(this.state.value);
     event.preventDefault();
   }
 
+  componentDidMount(){
+    this.getFileList();
+  }
+
   render() {
+    const file_list = this.state.file_list;
     let showCorMatrix;
     let showScatterPlot;
+    let options = [];
 
     if(this.state.showCorMatrix){
       showCorMatrix = (
@@ -37,6 +53,14 @@ class Regression extends Component {
       );
     }
 
+    for(var i=0;i<file_list.length;i++){
+      options.push(
+        <option key={i} value={file_list[i]}>{file_list[i]}</option>
+      );
+    }
+
+    // console.log(this.state);
+
     return (
       <div className='regression'>
         <div className='formData'>
@@ -44,10 +68,7 @@ class Regression extends Component {
             <label>
               Choose your file to view:
               <select value={this.state.value} onChange={this.handleChange}>
-                <option value="grapefruit">Grapefruit</option>
-                <option value="lime">Lime</option>
-                <option value="coconut">Coconut</option>
-                <option value="mango">Mango</option>
+                {options}
               </select>
             </label>
             <input type="submit" value="Submit" />

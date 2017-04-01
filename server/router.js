@@ -23,6 +23,7 @@ module.exports = function(app) {
   apiRoutes.get('/prediction/:userid/:fileid', _ourController.prediction);
   apiRoutes.post('/user', _ourController.checkUserAreInDB);
   apiRoutes.get('/limit/:id', _ourController.getFileLimit);
+  apiRoutes.get('/list/:id', _ourController.getFileList);
   apiRoutes.post('/upload', _ourController.uploadCSV);
   //tell the app to use apiRoutes
   //and set the base url to

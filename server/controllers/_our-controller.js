@@ -151,9 +151,15 @@ exports.uploadCSV = function(req, res, next){
   var dir = './uploads/'+req.body.fileid;
   if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
+    if (!fs.existsSync(dir+'/file')){
+      fs.mkdirSync(dir+'/file');
+    }
+    if (!fs.existsSync(dir+'/cor-data')){
+      fs.mkdirSync(dir+'/cor-data');
+    }
   }
 
-  fs.writeFile(dir+'/'+req.body.filename, req.body.data_text, function(err) {
+  fs.writeFile(dir+'/file/'+req.body.filename, req.body.data_text, function(err) {
     if(err) {
       console.log(err);
       res.status(404).json(err);
@@ -204,3 +210,30 @@ exports.getFileLimit = function(req, res, next){
       res.status(404).json(error);
     });
 }
+
+exports.getFileList = function(req, res, next) {
+  var id = req.params.id;
+  var upload_path = '/home/giegie/mytest/test-api-scatter/server/uploads/'
+  var result = _getAllFilesFromFolder(upload_path + id +'/file');
+  res.status(200).json(result);
+}
+
+var _getAllFilesFromFolder = function(dir) {
+
+    var filesystem = require("fs");
+    var results = [];
+
+    filesystem.readdirSync(dir).forEach(function(my_file) {
+
+        file = dir+'/'+my_file;
+        var stat = filesystem.statSync(file);
+
+        if (stat && stat.isDirectory()) {
+            results = results.concat(_getAllFilesFromFolder(file))
+        } else results.push(my_file);
+
+    });
+
+    return results;
+
+};

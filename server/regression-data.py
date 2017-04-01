@@ -11,7 +11,7 @@ file_path = '/home/giegie/mytest/test-api-scatter/server/uploads/'+userid+'/'
 
 data_dict = {'corMatrix': '', 'table-data': ''}
 # print userid, fileid
-df=pd.read_csv(file_path+fileid+'.csv')
+df=pd.read_csv(file_path+'file/'+fileid+'.csv')
 df=df.fillna(0)
 key_list = list(df)
 my_dict = {}
@@ -19,7 +19,7 @@ for i in key_list:
 	my_dict[i] = list(df[i])
 data_dict['table-data'] = my_dict
 # print data_dict['data']['gdp']
-df_matrix=pd.read_csv(file_path+'cor-'+fileid+'.csv')
+df_matrix=pd.read_csv(file_path+'cor-data/cor-'+fileid+'.csv')
 # print list(df_matrix['Unnamed: 0'])
 corMatrix = []
 key_list = df_matrix['Unnamed: 0']
