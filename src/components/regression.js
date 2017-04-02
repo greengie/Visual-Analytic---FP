@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import SelectFile from './selectfile'
+import CorrelationMatrix from './correlationMatrix'
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 
@@ -9,7 +10,7 @@ class Regression extends Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = {showCorMatrix: false, file_list: []};
+    this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: []};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,8 +31,15 @@ class Regression extends Component {
   }
 
   handleSubmit(event) {
-    this.setState({showCorMatrix: true});
-    console.log(this.state.value);
+    axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + this.state.value)
+      .then(res => {
+        // console.log(res.data.corMatrix);
+        // console.log(res.data['table-data'])
+        this.setState({corMatrix: res.data.corMatrix});
+        this.setState({data: res.data['table-data']});
+        this.setState({label: res.data.label});
+        this.setState({showCorMatrix: true});
+      });
     event.preventDefault();
   }
 
@@ -41,15 +49,15 @@ class Regression extends Component {
 
   render() {
     const file_list = this.state.file_list;
+    const corMatrix = this.state.corMatrix;
+    const label = this.state.label;
+
     let showCorMatrix;
-    let showScatterPlot;
     let options = [];
 
     if(this.state.showCorMatrix){
       showCorMatrix = (
-        <div>
-          <h4>Cor-Matrix here!</h4>
-        </div>
+        <CorrelationMatrix corMatrix={corMatrix} label={label} />
       );
     }
 
@@ -59,7 +67,7 @@ class Regression extends Component {
       );
     }
 
-    // console.log(this.state);
+    console.log(this.state);
 
     return (
       <div className='regression'>
