@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import d3 from 'd3';
+import PlotScatter from './plotScatter';
+
 require('../assets/stylesheets/correlationMatrix.css');
 
 const margin = {top: 50, right: 50, bottom: 100, left: 100};
-const width = 350;
-const height = 350;
+const width = 500;
+const height = 500;
+const padding = 30;
 
 class CorrelationMatrix extends Component {
 
@@ -12,7 +15,7 @@ class CorrelationMatrix extends Component {
     super(props);
     console.log(props);
 
-    this.state = {corMatrix: props.corMatrix, label: props.label, showScatterPlot: false};
+    this.state = {corMatrix: props.corMatrix, label: props.label, data: props.data, label_x: '', label_y: '', showScatterPlot: false};
   }
 
   showData(a,i,j,y){
@@ -51,6 +54,8 @@ class CorrelationMatrix extends Component {
 
   _handleMouseClick(i, j){
     this.setState({showScatterPlot: true});
+    this.setState({label_x: this.state.label[i]});
+    this.setState({label_y: this.state.label[j]});
     console.log(this.state.label[i]);
     console.log(this.state.label[j]);
   }
@@ -61,6 +66,9 @@ class CorrelationMatrix extends Component {
     const end_color = '#ff3333';
     const numrows = corMatrix.length;
     const numcols = corMatrix[0].length;
+    const label_x = this.state.label_x;
+    const label_y = this.state.label_y;
+    const data = this.state.data;
 
     // const maxValue = d3.max(corMatrix, function(layer) { return d3.max(layer, function(d) { return d; }); });
     // const minValue = d3.min(corMatrix, function(layer) { return d3.min(layer, function(d) { return d; }); });
@@ -81,36 +89,41 @@ class CorrelationMatrix extends Component {
 
     if(this.state.showScatterPlot){
       showScatterPlot = (
-          <h4>ScatterPlot Here!</h4>
+        <div className='scatterPlot'>
+          <PlotScatter label_x={label_x} label_y={label_y} dataX={data[label_x]} dataY={data[label_y]} width={width} height={height} margin={margin} padding={padding} />
+        </div>
       );
     }
 
-    console.log(this.state.showScatterPlot);
+    console.log(data[label_x]);
+    console.log(data[label_y]);
 
     return(
-      <div className='CorrelationMatrix'>
-        <svg ref='svg' className='correlationMatrix' width={width + margin.left + margin.right} height={height + margin.top + margin.bottom}>
-          <rect ref='background' width={width} height={height}>
-          </rect>
-          {corMatrix.map((d, i) => {
-            return(
-              <g key={i} className='row' ref='row' transform={"translate(0," + y(i) + ")"}>
-                {d.map((a, j) => {
-                  return(
-                    <g key={j} className='cell' ref='cell' transform={"translate(" + x(j) + ", 0)"}>
-                      <rect ref={'rect-'+i+'-'+j} width={x.rangeBand()}
-                      height={y.rangeBand()} fill={colorMap(a)}
-                      onMouseOver={this.showData.bind(this, a, i, j)}
-                      onMouseOut={this._handleMouseOut.bind(this, i, j)}
-                      onClick={this._handleMouseClick.bind(this, i, j)} />
-                      <text ref={'text-'+i+'-'+j} dy={'.32em'} x={x.rangeBand() / 2} y={y.rangeBand() / 2} fill={'black'}>{Number(a).toFixed(2)}</text>
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })}
-        </svg>
+      <div className='cor-scatter'>
+        <div className='CorrelationMatrix'>
+          <svg ref='svg' className='correlationMatrix' width={width + margin.left + margin.right} height={height + margin.top + margin.bottom}>
+            <rect ref='background' width={width} height={height}>
+            </rect>
+            {corMatrix.map((d, i) => {
+              return(
+                <g key={i} className='row' ref='row' transform={"translate(0," + y(i) + ")"}>
+                  {d.map((a, j) => {
+                    return(
+                      <g key={j} className='cell' ref='cell' transform={"translate(" + x(j) + ", 0)"}>
+                        <rect ref={'rect-'+i+'-'+j} width={x.rangeBand()}
+                        height={y.rangeBand()} fill={colorMap(a)}
+                        onMouseOver={this.showData.bind(this, a, i, j)}
+                        onMouseOut={this._handleMouseOut.bind(this, i, j)}
+                        onClick={this._handleMouseClick.bind(this, i, j)} />
+                        <text ref={'text-'+i+'-'+j} dy={'.32em'} x={x.rangeBand() / 2} y={y.rangeBand() / 2} fill={'black'}>{Number(a).toFixed(2)}</text>
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
         {showScatterPlot}
       </div>
     );

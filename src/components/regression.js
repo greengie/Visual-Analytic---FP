@@ -50,6 +50,7 @@ class Regression extends Component {
   render() {
     const file_list = this.state.file_list;
     const corMatrix = this.state.corMatrix;
+    const data = this.state.data;
     const label = this.state.label;
 
     let showCorMatrix;
@@ -57,7 +58,7 @@ class Regression extends Component {
 
     if(this.state.showCorMatrix){
       showCorMatrix = (
-        <CorrelationMatrix corMatrix={corMatrix} label={label} />
+        <CorrelationMatrix corMatrix={corMatrix} label={label} data={data} />
       );
     }
 
@@ -81,8 +82,8 @@ class Regression extends Component {
             </label>
             <input type="submit" value="Submit" />
           </form>
-          {showCorMatrix}
         </div>
+        {showCorMatrix}
       </div>
     );
   }
