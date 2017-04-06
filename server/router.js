@@ -25,6 +25,7 @@ module.exports = function(app) {
   apiRoutes.get('/limit/:id', _ourController.getFileLimit);
   apiRoutes.get('/list/:id', _ourController.getFileList);
   apiRoutes.post('/upload', _ourController.uploadCSV);
+  apiRoutes.post('/calregression/:label_x/:label_y', _ourController.calculateRegression);
   //tell the app to use apiRoutes
   //and set the base url to
   // localhost:3000/api

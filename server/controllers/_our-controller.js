@@ -2,6 +2,7 @@
 // when someone accesses the route on our
 // api
 //============================
+const rFunction = require('../regression-function.js');
 const pgp = require('pg-promise')();
 const db = require('../config/db');
 const atob = require('atob');
@@ -217,6 +218,23 @@ exports.getFileList = function(req, res, next) {
   var result = _getAllFilesFromFolder(upload_path + id +'/file');
   res.status(200).json(result);
 }
+
+exports.calculateRegression = function(req, res, next) {
+  var label_x = req.params.label_x;
+  var label_y = req.params.label_y;
+  console.log(label_x);
+  console.log(label_y);
+  // console.log(req.body.data[label_x]);
+  // var dataX = [];
+  // for(var i=0;i<req.body.data[label_x].length;i++){
+  //   var value = Math.pow(10, req.body.data[label_x][i]);
+  //   dataX.push(value);
+  // }
+  var predictionData = rFunction.regressionFunction(label_x, label_y, req.body.data[label_x]);
+  // console.log(predictionData);
+  res.status(200).json(predictionData);
+}
+
 
 var _getAllFilesFromFolder = function(dir) {
 
