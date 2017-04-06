@@ -19,6 +19,15 @@ class PlotScatter extends Component{
     return data;
   }
 
+  getLabel(xticks){
+    var labels = []
+    for(var i=0;i<xticks.length;i++){
+      labels.push(Math.pow(10, xticks[i]));
+    }
+    return labels;
+  }
+
+
   render(){
     const {height, width, pad, dataX, dataY, dataY_predict, label_x, label_y, padding} = this.props;
     const xMax = (dataX)  => d3.max(dataX, (d) => d);
@@ -29,6 +38,7 @@ class PlotScatter extends Component{
     const yMin = (dataY)  => d3.min(dataY, (d) => d);
     const xScale = d3.scale.linear().domain([xMin(dataX), xMax(dataX)]).range([padding, width - padding*2]);
     const yScale = d3.scale.linear().domain([Math.min(yMin(dataY), y_hat_Min(dataY_predict)), Math.max(yMax(dataY), y_hat_Max(dataY_predict))]).range([height - padding, padding]);
+    // const yScale_hat = d3.scale.log().domain([1,12]).range([height - padding, padding]);
     const transform = 'translate(' + (pad.left*2+pad.right+width) + ', ' + (pad.top) + ')';
     const transform_label_y = "rotate(270,"+(-pad.left*0.8)+","+(height/2)+")";
     const line = d3.svg.line()
@@ -37,10 +47,12 @@ class PlotScatter extends Component{
     const data = this.initData(dataX, dataY_predict);
 
     const xticks = xScale.ticks(5);
-    const yticks = yScale.ticks(5);
+    const yticks = yScale.ticks(8);
 
     // console.log(xticks);
-    console.log(data);
+    const xLabels = this.getLabel(xticks);
+    const yLabels = this.getLabel(yticks);
+    // console.log(xLabels);
     // console.log(dataY);
     // console.log(dataY_predict);
 
@@ -56,7 +68,7 @@ class PlotScatter extends Component{
         </text>
         {xticks.map((d, i) => {
           return(
-            <text key={i} class='axes' x={xScale(d)} y={height+pad.bottom*0.3} textAnchor={'middle'} dominant-baseline={"middle"}>{d}</text>
+            <text key={i} class='axes' x={xScale(d)} y={height+pad.bottom*0.3} textAnchor={'middle'} dominant-baseline={"middle"}>{d3.format(",.1s")(xLabels[i])}</text>
           );
         })}
         {xticks.map((d, i) => {
@@ -66,7 +78,7 @@ class PlotScatter extends Component{
         })}
         {yticks.map((d,i) => {
           return(
-            <text key={i} class='axes' x={-pad.left*0.3} y={yScale(d)} textAnchor={'middle'} dominant-baseline={"middle"}>{d3.format(",.1s")(d)}</text>
+            <text key={i} class='axes' x={-pad.left*0.3} y={yScale(d)} textAnchor={'middle'} dominant-baseline={"middle"}>{d3.format(",.1s")(yLabels[i])}</text>
           );
         })}
         {yticks.map((d,i) => {
@@ -74,12 +86,18 @@ class PlotScatter extends Component{
             <line key={i} class='axes' y1={yScale(d)} y2={yScale(d)} x1={0} x2={width} stroke={"white"} strokeWidth={1}></line>
           );
         })}
-        <path class='regression-line' stroke={"darkslateblue"} d={line(data)}></path>
+        {data.map((d,i) => {
+          // console.log(xScale(d));
+          // console.log(yScale(dataY[i]));
+          return(
+            <circle key={i+'regression-line'} r={3} cx={xScale(d[0])} cy={yScale(d[1])} stroke={"black"} strokeWidth={1} fill={'darkslateblue'}/>
+          );
+        })}
         {dataX.map((d,i) => {
           // console.log(xScale(d));
           // console.log(yScale(dataY[i]));
           return(
-            <circle key={i} r={3} cx={xScale(d)} cy={yScale(dataY[i])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
+            <circle key={i+'dot'} r={3} cx={xScale(d)} cy={yScale(dataY[i])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
           );
         })}
       </g>

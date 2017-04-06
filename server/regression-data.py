@@ -18,16 +18,16 @@ data_dict['label'] = key_list
 my_dict = {}
 for i in key_list:
 	my_dict[i] = list(df[i])
-# new_dict = {}
-# for i in my_dict:
-# 	new_dict[i] = []
-# 	for data in my_dict[i]:
-# 		if(data > 0):
-# 			new_dict[i].append(round(np.log10(data), 2))
-# 		else:
-# 			new_dict[i].append(round(data, 2))
-data_dict['table-data'] = my_dict
-# data_dict['table-data'] = new_dict
+new_dict = {}
+for i in my_dict:
+	new_dict[i] = []
+	for data in my_dict[i]:
+		if(data > 0):
+			new_dict[i].append(round(np.log10(data), 2))
+		else:
+			new_dict[i].append(round(data, 2))
+# data_dict['table-data'] = my_dict
+data_dict['table-data'] = new_dict
 # print data_dict['data']['gdp']
 df_matrix=pd.read_csv(file_path+'cor-data/cor-'+fileid)
 # print list(df_matrix['Unnamed: 0'])

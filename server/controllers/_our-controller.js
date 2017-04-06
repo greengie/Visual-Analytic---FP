@@ -225,12 +225,12 @@ exports.calculateRegression = function(req, res, next) {
   console.log(label_x);
   console.log(label_y);
   // console.log(req.body.data[label_x]);
-  // var dataX = [];
-  // for(var i=0;i<req.body.data[label_x].length;i++){
-  //   var value = Math.pow(10, req.body.data[label_x][i]);
-  //   dataX.push(value);
-  // }
-  var predictionData = rFunction.regressionFunction(label_x, label_y, req.body.data[label_x]);
+  var dataX = [];
+  for(var i=0;i<req.body.data[label_x].length;i++){
+    var value = Math.pow(10, req.body.data[label_x][i]);
+    dataX.push(value);
+  }
+  var predictionData = rFunction.regressionFunction(label_x, label_y, dataX);
   // console.log(predictionData);
   res.status(200).json(predictionData);
 }
