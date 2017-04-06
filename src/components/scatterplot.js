@@ -67,15 +67,15 @@ export default class ScatterPlot extends React.Component{
     return (
       <div>
         <svg ref='svg' width={width} height={height} className='chart scatter-plot'>
+          <g className="xy-axis">
+            <Axis type={1} {...xSettings}/>
+            <Axis type={1} {...ySettings}/>
+          </g>
           {data.map((d, i) => {
             return (
               <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={rScale(d.value)} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
             );
           })}
-          <g className="xy-axis">
-            <Axis type={1} {...xSettings}/>
-            <Axis type={1} {...ySettings}/>
-          </g>
         </svg>
       </div>
     );

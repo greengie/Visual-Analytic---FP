@@ -15,7 +15,7 @@ export default class Main extends Component {
     // console.log(this.state);
     return (
       <div>
-        <Navigation id={this.state.id} file_num={this.state.num_file}/>
+        <Navigation id={this.state.id} />
         <div>
           <h2>Welcomes</h2>
           <p>{this.state.first_name} {this.state.last_name}</p>

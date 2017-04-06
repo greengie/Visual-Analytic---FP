@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import d3 from 'd3';
 import PlotScatter from './plotScatter';
+import axios from 'axios';
 
 require('../assets/stylesheets/correlationMatrix.css');
 
-const margin = {top: 50, right: 50, bottom: 100, left: 100};
+// const margin = {top: 50, right: 50, bottom: 100, left: 100};
+const pad = {left:70, top:40, right:5, bottom: 70};
 const width = 500;
 const height = 500;
-const padding = 30;
+const padding = 5;
+const totalh = height + pad.top + pad.bottom;
+const totalw = (width + pad.left + pad.right)*2;
+const API_URL = 'http://128.199.99.233:3000/api/';
 
 class CorrelationMatrix extends Component {
 
@@ -15,33 +20,20 @@ class CorrelationMatrix extends Component {
     super(props);
     console.log(props);
 
-    this.state = {corMatrix: props.corMatrix, label: props.label, data: props.data, label_x: '', label_y: '', showScatterPlot: false};
+    this.state = {corMatrix: props.corMatrix, label: props.label, data: props.data, label_x: '', label_y: '', showScatterPlot: false, regressionData: []};
   }
 
   showData(a,i,j,y){
-    console.log(this.refs['rect-'+i+'-'+j]);
-    console.log(a);
-    console.log(this.state.label[i]);
-    console.log(this.state.label[j]);
+    // console.log(this.refs['rect-'+i+'-'+j]);
+    // console.log(a);
+    // console.log(this.state.label[i]);
+    // console.log(this.state.label[j]);
     let square = d3.select(this.refs['rect-'+i+'-'+j]);
     square.style("stroke-width", 2)
         .style("stroke", 'black');
     let text = d3.select(this.refs['text-'+i+'-'+j]);
     text.style('display', 'block');
-    // let rowLabels = d3.select(this.refs.svg)
-    //   .append("text")
-    //   .attr("class", "y-label")
-    //   .attr("x", -50)
-    //   .attr("y", y / 2)
-    //   .attr("dy", ".32em")
-    //   .attr("text-anchor", "end")
-    //   .text(this.state.label[i])
-    //   .style('display', 'block')
-    //   .style('fill', 'black');
 
-    // rowTooltip.html(this.state.label[i])
-    //   .style("left", (-50) + "px")
-    //   .style("top", (y/2) + "px");
   }
 
   _handleMouseOut(i, j){
@@ -56,6 +48,13 @@ class CorrelationMatrix extends Component {
     this.setState({showScatterPlot: true});
     this.setState({label_x: this.state.label[i]});
     this.setState({label_y: this.state.label[j]});
+    axios.post(API_URL+'calregression/'+this.state.label[i]+'/'+this.state.label[j], {
+        data: this.state.data
+      })
+      .then(res => {
+        this.setState({regressionData: res.data});
+        // console.log(res.data);
+      });
     console.log(this.state.label[i]);
     console.log(this.state.label[j]);
   }
@@ -69,6 +68,7 @@ class CorrelationMatrix extends Component {
     const label_x = this.state.label_x;
     const label_y = this.state.label_y;
     const data = this.state.data;
+    const regressionData = this.state.regressionData;
 
     // const maxValue = d3.max(corMatrix, function(layer) { return d3.max(layer, function(d) { return d; }); });
     // const minValue = d3.min(corMatrix, function(layer) { return d3.min(layer, function(d) { return d; }); });
@@ -85,25 +85,23 @@ class CorrelationMatrix extends Component {
         .domain([-1, 0, 1])
         .range(["darkslateblue", "white", "crimson"]);
 
-    var showScatterPlot;
+    let showScatterPlot;
 
     if(this.state.showScatterPlot){
       showScatterPlot = (
-        <div className='scatterPlot'>
-          <PlotScatter label_x={label_x} label_y={label_y} dataX={data[label_x]} dataY={data[label_y]} width={width} height={height} margin={margin} padding={padding} />
-        </div>
+        <PlotScatter label_x={label_x} label_y={label_y} dataX={data[label_x]} dataY={data[label_y]} width={width} height={height} pad={pad} padding={padding} dataY_predict={this.state.regressionData} />
       );
     }
 
-    console.log(data[label_x]);
-    console.log(data[label_y]);
+    // console.log(data[label_x]);
+    // console.log(data[label_y]);
 
     return(
       <div className='cor-scatter'>
-        <div className='CorrelationMatrix'>
-          <svg ref='svg' className='correlationMatrix' width={width + margin.left + margin.right} height={height + margin.top + margin.bottom}>
-            <rect ref='background' width={width} height={height}>
-            </rect>
+        <svg ref='svg' width={totalw} height={totalh}>
+          <g id='corPlot' transform={"translate("+pad.left+","+pad.top+")"}>
+            <rect ref='background' width={width} height={height}></rect>
+            <text id='corrtitle' x={width/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation-Matrix</text>
             {corMatrix.map((d, i) => {
               return(
                 <g key={i} className='row' ref='row' transform={"translate(0," + y(i) + ")"}>
@@ -122,11 +120,12 @@ class CorrelationMatrix extends Component {
                 </g>
               );
             })}
-          </svg>
-        </div>
-        {showScatterPlot}
+          </g>
+          {showScatterPlot}
+        </svg>
       </div>
     );
   }
 }
+
 export default CorrelationMatrix;
