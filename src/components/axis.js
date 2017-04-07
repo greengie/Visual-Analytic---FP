@@ -22,6 +22,9 @@ export default class Axis extends React.Component {
     else if(this.props.type == 2) {
       var axis = d3.svg.axis().orient(this.props.orient).scale(this.props.scale).ticks(10);
     }
+    else if(this.props.type == 3) {
+      var axis = d3.svg.axis().orient(this.props.orient).scale(this.props.scale).ticks(5);
+    }
     d3.select(node).call(axis);
   }
 

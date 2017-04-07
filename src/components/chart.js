@@ -18,28 +18,36 @@ const Router = require('react-router');
 require('rc-slider/assets/index.css');
 
 const Slider = require('rc-slider');
-const styles = {
-  width   : 1200,
-  height  : 500,
-  padding : 50,
-};
-
-const linestyles = {
-  width   : 600,
-  height  : 500,
-  padding : 50,
-};
-
-const styles2 = {
-  width   : 600,
-  height  : 500,
-  padding : 50,
-};
-
+// const styles = {
+//   width   : 1200,
+//   height  : 600,
+//   padding : 50,
+// };
+//
+// const linestyles = {
+//   width   : 600,
+//   height  : 500,
+//   padding : 50,
+// };
+//
+// const styles2 = {
+//   width   : 1200,
+//   height  : 200,
+//   padding : 50,
+// };
+//
 const bar_style = {
-  width   : 1200,
-  margin  : 50
+  width : 1200,
+  margin : 50
 };
+
+const totalw = 1200;
+const totalh = 600;
+const width_1 = (1200*7/10);
+const width_2 = totalw-width_1;
+const height = 500;
+const padding = 5;
+const pad ={left:30, top:50, right:70, bottom: 50};
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 
@@ -208,13 +216,7 @@ const Chart = React.createClass({
     // get cor r and x
     this.getCorData(this.state.selectorR, this.state.selectorX, this.state.selectorY, 'x', indicator_list[this.state.selectorR][4], this.state.scaling_x, 2);
   },
-  // logoutFacebook(){
-  //   FB.logout(function(response) {
-  //     console.log('press button');
-  //     Router.browserHistory.push('/');
-  //   });
-  // },
-  // render
+
   render() {
     const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
@@ -239,26 +241,22 @@ const Chart = React.createClass({
               <R_Selector selector={selectorR} handleSelectorChange={this.handleSelectorRChange} />
             </label>
           </div>
-          <section class="container">
-            <div class="left-half">
-              <h1>ScatterPlot</h1>
-              <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} {...styles} />
-              <div class='line-chart-1'>
-                <h2>Correlation of X and Y</h2>
-                <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...styles2} />
-              </div>
-            </div>
-            <div class="right-half">
-              <div class='line-chart-2'>
-                <h2>Correlation of R and X</h2>
-                <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
-              </div>
-              <div class='line-chart-3'>
-                <h2>Correlation of R and Y</h2>
-                <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
-              </div>
-            </div>
-          </section>
+          <svg ref='svg' width={totalw} height={totalh}>
+            <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>
+            <g id='line-chart-1' transform={"translate("+(pad.left*2+width_1)+","+pad.top+")"}>
+              <text id='scattertitle' x={width_2/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
+              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+              <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+            </g>
+            <g id='line-chart-2' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height/3))+")"}>
+              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+              <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+            </g>
+            <g id='line-chart-3' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height*2/3))+")"}>
+              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+              <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={true}/>
+            </g>
+          </svg>
           <div className='year-slider' style={bar_style}>
             <Slider value={value}
               onChange={this.onSliderChange} onAfterChange={this.onAfterChange}
@@ -271,3 +269,7 @@ const Chart = React.createClass({
 });
 
 export default Chart;
+
+// <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...styles2} />
+// <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
+// <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />

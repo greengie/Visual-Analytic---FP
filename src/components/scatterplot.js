@@ -40,7 +40,7 @@ export default class ScatterPlot extends React.Component{
   }
 
   render(){
-    const {dataX, dataY, dataR, width, height, padding, xMax, yMax} = this.props;
+    const {dataX, dataY, dataR, width, height, padding, xMax, yMax, pad} = this.props;
     const data = this.getNewData(dataX, dataY, dataR);
     // console.log(data);
     //return a function that "scales" X coordinates from the data to fit the chart.
@@ -65,19 +65,19 @@ export default class ScatterPlot extends React.Component{
     };
 
     return (
-      <div>
-        <svg ref='svg' width={width} height={height} className='chart scatter-plot'>
-          <g className="xy-axis">
-            <Axis type={1} {...xSettings}/>
-            <Axis type={1} {...ySettings}/>
-          </g>
-          {data.map((d, i) => {
-            return (
-              <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={rScale(d.value)} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
-            );
-          })}
-        </svg>
-      </div>
+      <g id='scatter-plot' transform={"translate("+pad.left+","+pad.top+")"}>
+        <rect ref='background' width={width} height={height} fill={"#c8c8c8"}></rect>
+        <text id='scattertitle' x={width/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Scatter-Plot</text>
+        {data.map((d, i) => {
+          return (
+            <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={rScale(d.value)} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
+          );
+        })}
+        <g className="xy-axis">
+          <Axis type={1} {...xSettings}/>
+          <Axis type={1} {...ySettings}/>
+        </g>
+      </g>
     );
   }
 }

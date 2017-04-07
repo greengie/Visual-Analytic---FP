@@ -19,16 +19,16 @@ export default class LineChart extends React.Component{
   }
 
   render(){
-    const {data, width, height, padding, yearMin, yearMax, year, path} = this.props;
+    const {data, width, width_1, height, padding, yearMin, yearMax, year, path, pad, xAxis} = this.props;
     const rY = this.getY(data,year);
     // const rYA = this.getY(dataA, year);
     // const rYB = this.getY(dataB, year);
     const line = d3.svg.line()
       .x((d) => xScale(d['y']))
       .y((d) => yScale(d['x']));
-    const xScale = d3.scale.linear().domain([yearMin, yearMax]).range([padding, width - padding*2]);
+    const xScale = d3.scale.linear().domain([yearMin, yearMax]).range([padding, width-padding]);
 
-      // return a function that "scales" Y coordinates from the data to fit the chart.
+    // return a function that "scales" Y coordinates from the data to fit the chart.
     const yScale = d3.scale.linear().domain([-1,1]).range([height - padding, padding]);
 
     const xSettings = {
@@ -38,24 +38,29 @@ export default class LineChart extends React.Component{
     };
 
     const ySettings = {
-      translate: 'translate(' + padding + ', 0)',
+      translate: 'translate(' + (padding) + ', 0)',
       scale: yScale,
       orient: 'left'
     };
 
     const highlightMark1 = <circle cx={xScale(year)} cy={yScale(rY)} r={4} className='highlight-mark-1' />;
 
+    let showXAxis
+    if(xAxis){
+      showXAxis = (
+        <Axis type={3} {...xSettings}/>
+      );
+    }
+
     return(
-      <div>
-        <svg ref='svg' width={width} height={height} className='chart linechart'>
-          <path className={path} d={line(data)} />
-          {highlightMark1}
-          <g className="xy-axis">
-            <Axis type={2} {...xSettings}/>
-            <Axis type={2} {...ySettings}/>
-          </g>
-        </svg>
-      </div>
+      <g class='lineChart'>
+        <path className={path} d={line(data)} stroke={'blue'} />
+        {highlightMark1}
+        <g className="xy-axis">
+          {showXAxis}
+          <Axis type={2} {...ySettings}/>
+        </g>
+      </g>
     );
   }
 }

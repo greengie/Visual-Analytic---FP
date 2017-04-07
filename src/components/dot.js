@@ -17,7 +17,8 @@ export default class Dot extends React.Component{
     let node = d3.select(this.refs.circle);
     // let label = d3.select('.tooltip');
     this.setState({hoverOn: true});
-    // console.log(this.props.r*1.5)
+    console.log(this.props.x);
+    console.log(this.props.y);
     node.transition()
         .attr('r', this.props.r*1.5)
         .duration(1000)
@@ -27,8 +28,8 @@ export default class Dot extends React.Component{
       .duration(1000)
       .style("opacity", .9);
     tooltip.html(this.props.name+"<br/>"+"X: "+formatNumber(this.props.real_x)+"<br />"+"Y: "+formatNumber(this.props.real_y)+"<br />"+"R: "+formatNumber(this.props.real_r))
-      .style("left", (this.props.x+5) + "px")
-      .style("top", (this.props.y) + "px");
+      .style("left", (200) + "px")
+      .style("top", (500) + "px");
   }
   //
   flashOut(){
