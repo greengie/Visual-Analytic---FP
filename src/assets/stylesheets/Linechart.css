@@ -1,4 +1,4 @@
-.linechart .path1 {
+.lineChart .path1 {
   fill: none;
   stroke: #5357a1;
   stroke-width: 2px;
@@ -6,7 +6,7 @@
   stroke-linecap: round;
 }
 
-.linechart .path2 {
+.lineChart .path2 {
   fill: none;
   stroke: #00e6e6;
   stroke-width: 2px;
@@ -14,7 +14,7 @@
   stroke-linecap: round;
 }
 
-.linechart .path3 {
+.lineChart .path3 {
   fill: none;
   stroke: #00ff80;
   stroke-width: 2px;
@@ -22,7 +22,7 @@
   stroke-linecap: round;
 }
 
-.linechart .highlight-mark-1 {
+.lineChart .highlight-mark-1 {
   fill: #FA7F9F;
   stroke: #891836;
   stroke-width: 1px;
