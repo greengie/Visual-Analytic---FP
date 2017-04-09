@@ -50,7 +50,7 @@ export default class ScatterPlot extends React.Component{
     const yScale = d3.scale.linear().domain([0, yMax]).range([height - padding, padding]);
 
     // const rScale = d3.scale.log().base(Math.E).domain([Math.exp(0), Math.exp(9)]).range([0,11]);
-    const rScale = d3.scale.log().domain([1, 45000000]).range([3,20]);
+    const rScale = d3.scale.sqrt().domain([1, 45000000]).range([3,20]);
 
     const xSettings = {
       translate: 'translate(0,' + (height - padding) + ')',
@@ -65,12 +65,12 @@ export default class ScatterPlot extends React.Component{
     };
 
     return (
-      <g id='scatter-plot' transform={"translate("+pad.left+","+pad.top+")"}>
+      <g ref='scatter_plot' id='scatter_plot' transform={"translate("+pad.left+","+pad.top+")"}>
         <rect ref='background' width={width} height={height} fill={"#c8c8c8"}></rect>
         <text id='scattertitle' x={width/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Scatter-Plot</text>
         {data.map((d, i) => {
           return (
-            <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={rScale(d.value)} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
+            <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={(rScale(d.value))*1.8} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
           );
         })}
         <g className="xy-axis">

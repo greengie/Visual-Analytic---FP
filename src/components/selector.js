@@ -15,6 +15,9 @@ const Selector = React.createClass({
         <option value="life_expectancy">Life expectancy at birth (years)</option>
         <option value="total_population">Total Population</option>
         <option value="expense_on_health">Total Expenditure On Health (PPP int. $)</option>
+        <option value="work_hour_per_week">Working hours per week (hours)</option>
+        <option value="tax_revenue">Tax Revenue (% of GDP)</option>
+        <option value="internet_user">Internet User (people who use)</option>
       </select>
     );
   }

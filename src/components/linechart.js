@@ -1,6 +1,7 @@
 import React from 'react';
 import d3 from 'd3';
 import Axis from './axis';
+const d3Ease = require("d3-ease");
 require('../assets/stylesheets/Linechart.css');
 
 export default class LineChart extends React.Component{
@@ -17,6 +18,33 @@ export default class LineChart extends React.Component{
       }
     }
   }
+
+  flash(r, pos_x, pos_y) {
+    let tooltip = d3.select('chart')
+         .append('div')
+         .attr('class', 'tooltip');
+    //
+    // var  formatNumber = d3.format(".5s");
+    console.log(r);
+    console.log(pos_x);
+    console.log(pos_y);
+    // let node = d3.select(this.refs.circle);
+    let label = d3.select('.tooltip');
+    // this.setState({hoverOn: true});
+
+    // node.transition()
+    //     .attr('r', this.props.r*1.5)
+    //     .duration(1000)
+    //     .ease(d3Ease.easeCubicOut)
+
+    tooltip.transition()
+      .duration(1000)
+      .style("opacity", .9);
+    tooltip.html("correlation : "+r+<br/>)
+      .style("left", (0) + "px")
+      .style("top", (0) + "px");
+  }
+
 
   render(){
     const {data, width, width_1, height, padding, yearMin, yearMax, year, path, pad, xAxis} = this.props;
@@ -43,7 +71,7 @@ export default class LineChart extends React.Component{
       orient: 'left'
     };
 
-    const highlightMark1 = <circle cx={xScale(year)} cy={yScale(rY)} r={4} className='highlight-mark-1' />;
+    const highlightMark1 = <circle ref='circle' cx={xScale(year)} cy={yScale(rY)} r={4} className='highlight-mark-1' onMouseOver={this.flash.bind(this, rY, xScale(year), yScale(rY))} />;
 
     let showXAxis
     if(xAxis){
@@ -55,11 +83,11 @@ export default class LineChart extends React.Component{
     return(
       <g class='lineChart'>
         <path className={path} d={line(data)} stroke={'blue'} />
-        {highlightMark1}
         <g className="xy-axis">
           {showXAxis}
           <Axis type={2} {...ySettings}/>
         </g>
+        {highlightMark1}
       </g>
     );
   }

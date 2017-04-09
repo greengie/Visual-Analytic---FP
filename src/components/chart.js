@@ -241,22 +241,24 @@ const Chart = React.createClass({
               <R_Selector selector={selectorR} handleSelectorChange={this.handleSelectorRChange} />
             </label>
           </div>
-          <svg ref='svg' width={totalw} height={totalh}>
-            <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>
-            <g id='line-chart-1' transform={"translate("+(pad.left*2+width_1)+","+pad.top+")"}>
-              <text id='scattertitle' x={width_2/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
-              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-              <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
-            </g>
-            <g id='line-chart-2' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height/3))+")"}>
-              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-              <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
-            </g>
-            <g id='line-chart-3' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height*2/3))+")"}>
-              <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-              <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={true}/>
-            </g>
-          </svg>
+          <div id='chart'>
+            <svg ref='svg' width={totalw} height={totalh}>
+              <ScatterPlot dataX={dataX} dataY={dataY} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>
+              <g id='line-chart-1' transform={"translate("+(pad.left*2+width_1)+","+pad.top+")"}>
+                <text id='scattertitle' x={width_2/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
+                <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+                <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+              </g>
+              <g id='line-chart-2' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height/3))+")"}>
+                <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+                <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+              </g>
+              <g id='line-chart-3' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height*2/3))+")"}>
+                <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
+                <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={true}/>
+              </g>
+            </svg>
+          </div>
           <div className='year-slider' style={bar_style}>
             <Slider value={value}
               onChange={this.onSliderChange} onAfterChange={this.onAfterChange}

@@ -9,7 +9,7 @@ export default class Dot extends React.Component{
   }
   //
   flash() {
-    let tooltip = d3.select('body')
+    let tooltip = d3.select('#chart')
          .append('div')
          .attr('class', 'tooltip');
 
@@ -17,8 +17,8 @@ export default class Dot extends React.Component{
     let node = d3.select(this.refs.circle);
     // let label = d3.select('.tooltip');
     this.setState({hoverOn: true});
-    console.log(this.props.x);
-    console.log(this.props.y);
+    // console.log(this.props.x);
+    // console.log(this.props.y);
     node.transition()
         .attr('r', this.props.r*1.5)
         .duration(1000)
