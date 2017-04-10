@@ -35,8 +35,11 @@ def pearson_correlation(dataX, dataY):
         sum_xy += (xi*yi);
         sum_x2 += (xi*xi);
         sum_y2 += (yi*yi);
-    r = (((n*sum_xy)-(sum_x*sum_y))/(math.sqrt(((n*sum_x2)-(sum_x*sum_x))*((n*sum_y2)-(sum_y*sum_y)))));
-    r = round(r, 2)
+    if((math.sqrt(((n*sum_x2)-(sum_x*sum_x))*((n*sum_y2)-(sum_y*sum_y)))) != 0):
+	    r = (((n*sum_xy)-(sum_x*sum_y))/(math.sqrt(((n*sum_x2)-(sum_x*sum_x))*((n*sum_y2)-(sum_y*sum_y)))))
+    else:
+    	r = 0
+	r = round(r, 2)
     # print r
     return r
 
