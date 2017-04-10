@@ -23,6 +23,7 @@ export default class Dot extends React.Component{
         .attr('r', this.props.r*1.5)
         .duration(1000)
         .ease(d3Ease.easeCubicOut)
+        .style("stroke-width", 3);
 
     tooltip.transition()
       .duration(1000)
@@ -46,7 +47,8 @@ export default class Dot extends React.Component{
     node.transition()
         .attr('r', this.props.r)
         .duration(1500)
-        .ease(d3Ease.easeCubicOut);
+        .ease(d3Ease.easeCubicOut)
+        .style("stroke-width", 2);
   }
 
   render() {

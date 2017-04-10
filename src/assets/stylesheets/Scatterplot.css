@@ -1,5 +1,5 @@
 #scatter_plot circle{
-  stroke: #1D5FA2;
+  stroke: #ffffff;
   stroke-width: 2;
   opacity: 0.9;
 }
@@ -19,6 +19,11 @@
   pointer-events: none;
 }
 
+.legend rect {
+  fill: #c8c8c8;
+  stroke: white;
+  opacity: 0.8;
+}
 /*div {
   display: flex;
   flex-direction: column;
