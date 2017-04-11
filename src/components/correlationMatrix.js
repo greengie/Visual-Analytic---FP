@@ -23,23 +23,24 @@ class CorrelationMatrix extends Component {
     this.state = {corMatrix: props.corMatrix, label: props.label, data: props.data, label_x: '', label_y: '', showScatterPlot: false, regressionData: []};
   }
 
-  showData(a,i,j,y){
-    // console.log(this.refs['rect-'+i+'-'+j]);
+  showData(a,i,j){
+    // console.log(color);
     // console.log(a);
     // console.log(this.state.label[i]);
     // console.log(this.state.label[j]);
     let square = d3.select(this.refs['rect-'+i+'-'+j]);
     square.style("stroke-width", 2)
-        .style("stroke", 'black');
+        .style("stroke", 'black')
+        .style("fill", 'yellow');
     let text = d3.select(this.refs['text-'+i+'-'+j]);
     text.style('display', 'block');
-
   }
 
-  _handleMouseOut(i, j){
+  _handleMouseOut(i, j, color){
     let square = d3.select(this.refs['rect-'+i+'-'+j]);
     square.style("stroke-width", 0)
-        .style("stroke", null);
+        .style("stroke", null)
+        .style("fill", color);
     let text = d3.select(this.refs['text-'+i+'-'+j]);
     text.style('display', 'none');
   }
@@ -111,7 +112,7 @@ class CorrelationMatrix extends Component {
                         <rect ref={'rect-'+i+'-'+j} width={x.rangeBand()}
                         height={y.rangeBand()} fill={colorMap(a)}
                         onMouseOver={this.showData.bind(this, a, i, j)}
-                        onMouseOut={this._handleMouseOut.bind(this, i, j)}
+                        onMouseOut={this._handleMouseOut.bind(this, i, j, colorMap(a))}
                         onClick={this._handleMouseClick.bind(this, i, j)} />
                         <text ref={'text-'+i+'-'+j} dy={'.32em'} x={x.rangeBand() / 2} y={y.rangeBand() / 2} fill={'black'}>{Number(a).toFixed(2)}</text>
                       </g>

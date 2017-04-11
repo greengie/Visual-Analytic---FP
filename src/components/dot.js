@@ -29,8 +29,8 @@ export default class Dot extends React.Component{
       .duration(1000)
       .style("opacity", .9);
     tooltip.html(this.props.name+"<br/>"+"X: "+formatNumber(this.props.real_x)+"<br />"+"Y: "+formatNumber(this.props.real_y)+"<br />"+"R: "+formatNumber(this.props.real_r))
-      .style("left", (200) + "px")
-      .style("top", (500) + "px");
+      .style("left", (this.props.x+30) + "px")
+      .style("top", (this.props.y+230) + "px");
   }
   //
   flashOut(){
@@ -51,11 +51,31 @@ export default class Dot extends React.Component{
         .style("stroke-width", 2);
   }
 
+  onMouseClick(color){
+    console.log(color);
+    let node = d3.select(this.refs.circle);
+    if(!this.state.onClick){
+      this.setState({onClick: true});
+      node.style("stroke-width", 2)
+          .style("stroke", 'white')
+          .style("opacity", 1)
+          .style("fill", 'yellow');
+    }
+    else{
+      this.setState({onClick: false});
+      node.style("stroke-width", 2)
+          .style("stroke", 'white')
+          .style("opacity", 0.9)
+          .style("fill", color);
+    }
+  }
+
   render() {
     const {x, y, r, color} = this.props;
-    const {hoverOn} = this.state;
+    const {hoverOn, onClick} = this.state;
     return <circle cx={x} cy={y} r={r} fill={color}
             ref="circle" onMouseOver={this.flash.bind(this)}
-            onMouseOut={this.flashOut.bind(this)} />
+            onMouseOut={this.flashOut.bind(this)}
+            onClick={this.onMouseClick.bind(this, color)} />
   }
 }

@@ -20,7 +20,7 @@ export default class LineChart extends React.Component{
   }
 
   flash(r, pos_x, pos_y) {
-    let tooltip = d3.select('chart')
+    let tooltip = d3.select('#chart')
          .append('div')
          .attr('class', 'tooltip');
     //
@@ -37,12 +37,12 @@ export default class LineChart extends React.Component{
     //     .duration(1000)
     //     .ease(d3Ease.easeCubicOut)
 
-    tooltip.transition()
-      .duration(1000)
-      .style("opacity", .9);
-    tooltip.html("correlation : "+r+<br/>)
-      .style("left", (0) + "px")
-      .style("top", (0) + "px");
+    // tooltip.transition()
+    //   .duration(1000)
+    //   .style("opacity", .9);
+    // tooltip.html("correlation : "+r+<br/>)
+    //   .style("left", (pos_x) + "px")
+    //   .style("top", (pos_y) + "px");
   }
 
 

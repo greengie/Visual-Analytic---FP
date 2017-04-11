@@ -7,7 +7,7 @@ class PlotScatter extends Component{
   constructor(props) {
     super(props);
     // console.log(props);
-
+    this.state = {hoverIndex: []};
     // this.state = {dataX: props.dataX, dataY: props.dataY, label_x:props.label_x, label_y:props.label_y}
   }
 
@@ -27,6 +27,23 @@ class PlotScatter extends Component{
     return labels;
   }
 
+  flash(i){
+    // console.log(i);
+    var hoverIndex = []
+    for(var key=i;key<(i+5);key++){
+      hoverIndex.push(key);
+      let circle = d3.select(this.refs['circle-'+key]);
+      circle.style("fill", 'yellow')
+    }
+    this.setState({hoverIndex: hoverIndex});
+  }
+
+  flashOut(){
+    for(var i=0;i<this.state.hoverIndex.length;i++){
+      let circle = d3.select(this.refs['circle-'+this.state.hoverIndex[i]]);
+      circle.style("fill", 'crimson')
+    }
+  }
 
   render(){
     const {height, width, pad, dataX, dataY, dataY_predict, label_x, label_y, padding} = this.props;
@@ -55,6 +72,7 @@ class PlotScatter extends Component{
     // console.log(xLabels);
     // console.log(dataY);
     // console.log(dataY_predict);
+    console.log(this.state.hoverIndex);
 
     return(
       <g id='scatterPlot' transform={"translate("+(pad.left*2+pad.right+width)+","+pad.top+")"}>
@@ -87,17 +105,17 @@ class PlotScatter extends Component{
           );
         })}
         {data.map((d,i) => {
-          // console.log(xScale(d));
-          // console.log(yScale(dataY[i]));
           return(
-            <circle key={i+'regression-line'} r={3} cx={xScale(d[0])} cy={yScale(d[1])} stroke={"black"} strokeWidth={1} fill={'darkslateblue'}/>
+            <circle key={i+'regression-line'} r={3} cx={xScale(d[0])} cy={yScale(d[1])}
+            stroke={"black"} strokeWidth={1} fill={'darkslateblue'}
+            onMouseOver={this.flash.bind(this, i)}
+            onMouseOut={this.flashOut.bind(this)}
+            />
           );
         })}
         {dataX.map((d,i) => {
-          // console.log(xScale(d));
-          // console.log(yScale(dataY[i]));
           return(
-            <circle key={i+'dot'} r={3} cx={xScale(d)} cy={yScale(dataY[i])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
+            <circle ref={"circle-"+i} key={i+'dot'} r={3} cx={xScale(d)} cy={yScale(dataY[i])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
           );
         })}
       </g>
