@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import d3 from 'd3';
 import Axis from './matrix-axis';
+const d3Ease = require("d3-ease");
 require('../assets/stylesheets/scatter-Matrix.css');
 
 class PlotScatter extends Component{
@@ -33,7 +34,11 @@ class PlotScatter extends Component{
     for(var key=i;key<(i+5);key++){
       hoverIndex.push(key);
       let circle = d3.select(this.refs['circle-'+key]);
-      circle.style("fill", 'yellow')
+      circle.transition()
+        .duration(800)
+        .ease("bounce")
+        .attr('r', 5)
+        .style("fill", 'yellow')
     }
     this.setState({hoverIndex: hoverIndex});
   }
@@ -41,7 +46,20 @@ class PlotScatter extends Component{
   flashOut(){
     for(var i=0;i<this.state.hoverIndex.length;i++){
       let circle = d3.select(this.refs['circle-'+this.state.hoverIndex[i]]);
-      circle.style("fill", 'crimson')
+      circle.transition()
+        .duration(400)
+        .ease("bounce")
+        .attr('r', 3)
+        .style("fill", 'crimson')
+    }
+  }
+
+  sortFunction(a, b) {
+    if (a[0] === b[0]) {
+        return 0;
+    }
+    else {
+        return (a[0] < b[0]) ? -1 : 1;
     }
   }
 
@@ -61,8 +79,9 @@ class PlotScatter extends Component{
     const line = d3.svg.line()
       .x((d) => xScale(d[0]))
       .y((d) => yScale(d[1]));
-    const data = this.initData(dataX, dataY_predict);
-
+    const data = this.initData(dataX, dataY).sort(this.sortFunction);
+    const data_predict = this.initData(dataX, dataY_predict).sort(this.sortFunction);
+    // const data = data.sort(this.sortFunction);
     const xticks = xScale.ticks(5);
     const yticks = yScale.ticks(8);
 
@@ -70,9 +89,10 @@ class PlotScatter extends Component{
     const xLabels = this.getLabel(xticks);
     const yLabels = this.getLabel(yticks);
     // console.log(xLabels);
-    // console.log(dataY);
+    // console.log(data);
+    // console.log(data_predict);
     // console.log(dataY_predict);
-    console.log(this.state.hoverIndex);
+    // console.log(this.state.hoverIndex);
 
     return(
       <g id='scatterPlot' transform={"translate("+(pad.left*2+pad.right+width)+","+pad.top+")"}>
@@ -104,7 +124,7 @@ class PlotScatter extends Component{
             <line key={i} class='axes' y1={yScale(d)} y2={yScale(d)} x1={0} x2={width} stroke={"white"} strokeWidth={1}></line>
           );
         })}
-        {data.map((d,i) => {
+        {data_predict.map((d,i) => {
           return(
             <circle key={i+'regression-line'} r={3} cx={xScale(d[0])} cy={yScale(d[1])}
             stroke={"black"} strokeWidth={1} fill={'darkslateblue'}
@@ -113,9 +133,9 @@ class PlotScatter extends Component{
             />
           );
         })}
-        {dataX.map((d,i) => {
+        {data.map((d,i) => {
           return(
-            <circle ref={"circle-"+i} key={i+'dot'} r={3} cx={xScale(d)} cy={yScale(dataY[i])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
+            <circle ref={"circle-"+i} key={i+'dot'} r={3} cx={xScale(d[0])} cy={yScale(d[1])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
           );
         })}
       </g>
