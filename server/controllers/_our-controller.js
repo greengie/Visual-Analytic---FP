@@ -45,6 +45,18 @@ exports.data = function(req, res, next) {
     });
 }
 
+exports.country = function(req, res, next){
+  Subjects.any("select country_name,iso_alpha3 as country_code from country_list")
+    .then(function (result) {
+      // console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(404).json(error);
+    });
+}
+
 exports.data_migration = function(req, res, next) {
   var year = req.params.year;
   var selector = req.params.selector;
@@ -54,6 +66,46 @@ exports.data_migration = function(req, res, next) {
       res.status(200).json(result);
     })
     .catch(function (error) {
+      console.log(error);
+      res.status(404).json(error);
+    });
+}
+
+exports.world = function(req, res, next){
+  Subjects.any("select world from jsonworld where id = 1")
+    .then(function (result) {
+      // console.log(result);
+      res.status(200).json(result[0].world);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(404).json(error);
+    });
+}
+
+exports.migration_map = function(req, res, next){
+  var year = req.params.year;
+  Subjects.any("select migration_data.origin_country,migration_data.destination_country,country_code.num_code as id,total from country_list, migration_data, country_code where year=$1 and (country_list.country_name = migration_data.destination_country) and (country_list.iso_alpha3 = country_code.iso_alpha3)", [year])
+    .then(function (result) {
+      // console.log(result);
+      var output = [];
+      result.forEach(function(value){
+        var dict = {'id': value.id, 'name': value.destination_country.replace(/\s+/g, ''), 'source': {}};
+        var existing = output.filter(function(v, i) {
+          return v.id == value.id;
+        });
+        if (existing.length) {
+          var existingIndex = output.indexOf(existing[0]);
+          output[existingIndex]['source'][value.origin_country.replace(/\s+/g, '')] = parseInt(value.total);
+        } else {
+          if (typeof value.total == 'string')
+            dict['source'][value.origin_country.replace(/\s+/g, '')] = parseInt(value.total);
+          output.push(dict);
+        }
+      });
+      res.status(200).json(output);
+    })
+    .catch(function(error) {
       console.log(error);
       res.status(404).json(error);
     });
