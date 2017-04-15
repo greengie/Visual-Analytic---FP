@@ -22,9 +22,10 @@ export default class Navigation extends Component {
       <div className="frame bit-1 navigation_container">
       <h3 className="bit-40"><Link to="/main">Visual Analytic</Link></h3>
         <div className="nav_menu">
-          <li key={100}><Link to="/main/chart">Chart</Link></li>
+          <li key={100}><Link to='/main/chart'>Chart</Link></li>
           <li key={101}><Link to={'/main/upload/'+this.props.id}>Upload</Link></li>
           <li key={102}><Link to={'/main/regression/'+this.props.id}>Regression</Link></li>
+          <li key={103}><Link to={'/main/map'}>Map</Link></li>
         </div>
       </div>
     );
