@@ -12,21 +12,6 @@ function migrationSources(data, centroids, nameIdMap) {
                  .filter(name => data.source[name] !== 0)
 }
 
-// const Curve = ({ start, end, color }) => {
-//     const line = d3.svg.line().interpolate("basis"),
-//           [x1, y1] = start,
-//           [x2, y2] = end,
-//           middle = [(x1 + x2)/2, (y1 + y2)/2-200];
-//
-//     return (
-//         <path d={line([start, middle, end])}
-//               style={{stroke: color,
-//                       strokeWidth: '1.6px',
-//                       strokeOpacity: '0.7',
-//                       fillOpacity: 0}} />
-//     );
-// };
-
 const CountryMigrations = ({ data, nameIdMap, centroids }) => {
      const destination = centroids[data.id];
 
@@ -58,6 +43,10 @@ const CountryMigrations = ({ data, nameIdMap, centroids }) => {
  };
 
  const Migrations = ({ topology, projection, data, nameIdMap, focusCountry}) => {
+     if (!data) {
+         return null;
+     }
+
      const countries = topojson.feature(topology, topology.objects.countries),
            path = d3.geo.path().projection(projection),
            centroids = _.fromPairs(countries.features

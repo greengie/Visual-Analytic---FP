@@ -10,6 +10,7 @@ function migrationSources(data, centroids, nameIdMap) {
 }
 
 const Map = ({ topology, projection, data, nameIdMap, focusCountry }) => {
+
     const D = d3.geo.path().projection(projection),
           countries = topojson.feature(topology, topology.objects.countries),
           centroids = _.fromPairs(countries.features
@@ -55,6 +56,6 @@ const Map = ({ topology, projection, data, nameIdMap, focusCountry }) => {
             ))}
         </g>
      );
-};
+}
 
 export default Map;

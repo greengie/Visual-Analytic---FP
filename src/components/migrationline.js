@@ -3,11 +3,31 @@ import * as d3 from 'd3';
 const d3Selection = require("d3-selection");
 
 function translateAlong(path) {
-    var l = path.getTotalLength();
+    // console.log(path);
+    try{
+      var l = path.getTotalLength();
+    }
+    catch(e){
+      if(e instanceof TypeError){
+        var l = 1;
+        console.log('error');
+      }
+    }
+
     return function(d, i, a) {
         return function(t) {
+          try{
             var p = path.getPointAtLength(t * l);
-            return "translate(" + p.x + "," + p.y + ")";
+            console.log(p);
+          }
+          catch(e){
+            if(e instanceof TypeError){
+              var p = {'x': 0, 'y': 0};
+              console.log('error');
+            }
+          }
+          // var p = path.getPointAtLength(t * l);
+          return "translate(" + p.x + "," + p.y + ")";
         };
     };
 }
@@ -22,7 +42,7 @@ class MigrationLine extends Component {
     _transform(circle, delay) {
         const { start } = this.props,
               [ x1, y1 ] = start;
-
+        // console.log(delay);
         d3.select(circle)
           .attr("transform", `translate(${x1}, ${y1})`)
           .transition()
@@ -30,7 +50,7 @@ class MigrationLine extends Component {
           .duration(this.duration)
           .attrTween("transform", translateAlong(this.refs.path))
           .each("end", () => {
-              if(this.state.keepAnimating) {
+              if (this.state.keepAnimating) {
                   this._transform(circle, 0);
               }
           });
@@ -60,11 +80,13 @@ class MigrationLine extends Component {
         });
 
         d3.range(Ncircles).forEach((circle, i) => {
+            // console.log(circle);
             d3.select(this.refs[`circles-${i}`]).interrupt();
         })
     }
 
     render() {
+        // console.log(Ncircles);
         const { start, end, color, Ncircles } = this.props;
         const line = d3.svg.line().interpolate("basis"),
               [x1, y1] = start,
@@ -77,7 +99,7 @@ class MigrationLine extends Component {
                     <circle r="3"
                             style={{fill: color, fillOpacity: 0.6}}
                             ref={`circles-${i}`}
-                            key={`circle-${i}`} />
+                            key={`circles-${i}`} />
                 ))}
 
                 <path d={line([start, middle, end])}
@@ -89,6 +111,6 @@ class MigrationLine extends Component {
             </g>
         )
     }
-};
+}
 
 export default MigrationLine;
