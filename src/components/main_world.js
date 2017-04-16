@@ -4,12 +4,14 @@ import * as d3 from 'd3';
 import _ from 'lodash';
 import axios from 'axios';
 import { World } from './maps';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 const d3Queue = require('d3-queue');
 
 class Main_World extends Component {
   constructor(props) {
     super(props);
-    this.state = { data: null };
+    this.state = { data: null , focusCountry: ""};
   }
 
   componentWillMount() {
@@ -23,13 +25,33 @@ class Main_World extends Component {
        });
   }
 
+  changeFocusCountry(country) {
+      this.setState({
+          focusCountry: country.value
+      });
+  }
+
+  get countries() {
+      const { data } = this.state;
+
+      if (!data) return [];
+
+      return data.map(({ id, name }) => ({ value: id, label: name }));
+  }
+
   render() {
-      // console.log(this.state.data);
+      console.log(this.state.focusCountry);
       // console.log(this.state.nameIdMap);
       return (
         <div className='Map'>
-          <World width={1024} height={1024}
-              data={this.state.data} nameIdMap={this.state.nameIdMap} />
+          <World width={1440} height={600}
+              data={this.state.data} nameIdMap={this.state.nameIdMap}
+              focusCountry={this.state.focusCountry}
+              />
+          <Select name="focusCountry"
+                  value={this.state.focusCountry}
+                  options={this.countries}
+                  onChange={this.changeFocusCountry.bind(this)} />
         </div>
       );
   }
