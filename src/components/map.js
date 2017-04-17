@@ -23,7 +23,7 @@ const Map = ({ topology, projection, data, nameIdMap, focusCountry }) => {
         colorScale = _.noop;
 
     if (focusData) {
-        console.log(focusData);
+        // console.log(focusData);
         sources = migrationSources(focusData,
                                    centroids, nameIdMap);
         colorScale = d3.scale.log()

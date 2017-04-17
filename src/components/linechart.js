@@ -19,35 +19,54 @@ export default class LineChart extends React.Component{
     }
   }
 
-  flash(r, pos_x, pos_y) {
-    let tooltip = d3.select('#chart')
+  flash(r, pos_x, pos_y, index) {
+    let tooltip = d3.select('body')
          .append('div')
          .attr('class', 'tooltip');
-    //
-    // var  formatNumber = d3.format(".5s");
-    console.log(r);
-    console.log(pos_x);
-    console.log(pos_y);
-    // let node = d3.select(this.refs.circle);
-    let label = d3.select('.tooltip');
-    // this.setState({hoverOn: true});
 
-    // node.transition()
-    //     .attr('r', this.props.r*1.5)
-    //     .duration(1000)
-    //     .ease(d3Ease.easeCubicOut)
+    // console.log(r);
+    // console.log(pos_x);
+    // console.log(pos_y);
 
-    // tooltip.transition()
-    //   .duration(1000)
-    //   .style("opacity", .9);
-    // tooltip.html("correlation : "+r+<br/>)
-    //   .style("left", (pos_x) + "px")
-    //   .style("top", (pos_y) + "px");
+    let node = d3.select(this.refs.circle);
+
+    node.transition()
+        .attr('r', 4*1.5)
+        .duration(500)
+        .ease(d3Ease.easeCubicOut)
+        .style("stroke", "white")
+        .style("fill", "yellow")
+        .style("stroke-width", 1);
+
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", .9);
+    tooltip.html("Correlation : "+r)
+      .style("left", (this.props.width_1+pos_x) + "px")
+      .style("top", (this.props.height+(pos_y*index*3)-(this.props.pad.top*index)) + "px");
+  }
+
+  flashOut(){
+    let node = d3.select(this.refs.circle);
+    let label = d3.selectAll('.tooltip');
+
+    label.transition()
+      .duration(200)
+      .style("opacity", 0)
+      .remove();
+
+    node.transition()
+        .attr('r', 4)
+        .duration(500)
+        .ease(d3Ease.easeCubicOut)
+        .style("stroke-width", 1)
+        .style('fill', '#FA7F9F')
+        .style("stroke", '#891836');
   }
 
 
   render(){
-    const {data, width, width_1, height, padding, yearMin, yearMax, year, path, pad, xAxis} = this.props;
+    const {data, width, width_1, height, padding, yearMin, yearMax, year, path, pad, xAxis, index} = this.props;
     const rY = this.getY(data,year);
     // const rYA = this.getY(dataA, year);
     // const rYB = this.getY(dataB, year);
@@ -71,7 +90,10 @@ export default class LineChart extends React.Component{
       orient: 'left'
     };
 
-    const highlightMark1 = <circle ref='circle' cx={xScale(year)} cy={yScale(rY)} r={4} className='highlight-mark-1' onMouseOver={this.flash.bind(this, rY, xScale(year), yScale(rY))} />;
+    const highlightMark1 = <circle ref='circle' cx={xScale(year)} cy={yScale(rY)}
+                                    r={4} className='highlight-mark-1'
+                                    onMouseOver={this.flash.bind(this, rY, xScale(year), yScale(rY), index)}
+                                    onMouseOut={this.flashOut.bind(this)} />;
 
     let showXAxis
     if(xAxis){

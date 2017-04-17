@@ -9,7 +9,7 @@ class Regression extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
+    // console.log(props);
     this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: []};
 
     this.handleChange = this.handleChange.bind(this);
@@ -68,7 +68,7 @@ class Regression extends Component {
       );
     }
 
-    console.log(this.state);
+    // console.log(this.state);
 
     return (
       <div className='regression'>

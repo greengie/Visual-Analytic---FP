@@ -30,7 +30,7 @@ export default class Dot extends React.Component{
       .style("opacity", .9);
     tooltip.html(this.props.name+"<br/>"+"X: "+formatNumber(this.props.real_x)+"<br />"+"Y: "+formatNumber(this.props.real_y)+"<br />"+"R: "+formatNumber(this.props.real_r))
       .style("left", (this.props.x+30) + "px")
-      .style("top", (this.props.y+230) + "px");
+      .style("top", (this.props.y+250) + "px");
   }
   //
   flashOut(){
@@ -44,19 +44,25 @@ export default class Dot extends React.Component{
       .style("opacity", 0)
       .remove();
 
-    node.transition()
-        .attr('r', this.props.r)
-        .duration(1500)
-        .ease(d3Ease.easeCubicOut)
-        .style("stroke-width", 2);
+    if(!this.state.onClick){
+      node.transition()
+          .attr('r', this.props.r)
+          .duration(1500)
+          .ease(d3Ease.easeCubicOut)
+          .style("stroke-width", 2);
+    }
   }
 
   onMouseClick(color){
-    console.log(color);
+    // console.log(color);
     let node = d3.select(this.refs.circle);
     if(!this.state.onClick){
       this.setState({onClick: true});
-      node.style("stroke-width", 2)
+      node.transition()
+          .attr('r', this.props.r*1.5)
+          .duration(1000)
+          .ease(d3Ease.easeCubicOut)
+          .style("stroke-width", 2)
           .style("stroke", 'white')
           .style("opacity", 1)
           .style("fill", 'yellow');

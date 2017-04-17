@@ -35,10 +35,10 @@ class PlotScatter extends Component{
       hoverIndex.push(key);
       let circle = d3.select(this.refs['circle-'+key]);
       circle.transition()
-        .duration(800)
-        .ease("bounce")
+        .duration(1000)
+        .ease(d3Ease.easeCubicOut)
         .attr('r', 5)
-        .style("fill", 'yellow')
+        .style("fill", 'lightgreen')
     }
     this.setState({hoverIndex: hoverIndex});
   }
@@ -73,7 +73,6 @@ class PlotScatter extends Component{
     const yMin = (dataY)  => d3.min(dataY, (d) => d);
     const xScale = d3.scale.linear().domain([xMin(dataX), xMax(dataX)]).range([padding, width - padding*2]);
     const yScale = d3.scale.linear().domain([Math.min(yMin(dataY), y_hat_Min(dataY_predict)), Math.max(yMax(dataY), y_hat_Max(dataY_predict))]).range([height - padding, padding]);
-    // const yScale_hat = d3.scale.log().domain([1,12]).range([height - padding, padding]);
     const transform = 'translate(' + (pad.left*2+pad.right+width) + ', ' + (pad.top) + ')';
     const transform_label_y = "rotate(270,"+(-pad.left*0.8)+","+(height/2)+")";
     const line = d3.svg.line()
@@ -81,18 +80,12 @@ class PlotScatter extends Component{
       .y((d) => yScale(d[1]));
     const data = this.initData(dataX, dataY).sort(this.sortFunction);
     const data_predict = this.initData(dataX, dataY_predict).sort(this.sortFunction);
-    // const data = data.sort(this.sortFunction);
+
     const xticks = xScale.ticks(5);
     const yticks = yScale.ticks(8);
 
-    // console.log(xticks);
     const xLabels = this.getLabel(xticks);
     const yLabels = this.getLabel(yticks);
-    // console.log(xLabels);
-    // console.log(data);
-    // console.log(data_predict);
-    // console.log(dataY_predict);
-    // console.log(this.state.hoverIndex);
 
     return(
       <g id='scatterPlot' transform={"translate("+(pad.left*2+pad.right+width)+","+pad.top+")"}>

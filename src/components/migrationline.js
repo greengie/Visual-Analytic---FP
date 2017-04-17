@@ -18,12 +18,12 @@ function translateAlong(path) {
         return function(t) {
           try{
             var p = path.getPointAtLength(t * l);
-            console.log(p);
+            // console.log(p);
           }
           catch(e){
             if(e instanceof TypeError){
               var p = {'x': 0, 'y': 0};
-              console.log('error');
+              // console.log('error');
             }
           }
           // var p = path.getPointAtLength(t * l);

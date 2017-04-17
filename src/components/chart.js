@@ -245,17 +245,17 @@ const Chart = React.createClass({
             <svg ref='svg' width={totalw} height={totalh}>
               <ScatterPlot dataX={dataX} dataY={dataY} year={value} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>
               <g id='line-chart-1' transform={"translate("+(pad.left*2+width_1)+","+pad.top+")"}>
-                <text id='scattertitle' x={width_2/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
+                <text id='correlationtitle' x={(width_2/2)-pad.left} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
                 <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-                <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+                <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false} index={1}/>
               </g>
               <g id='line-chart-2' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height/3))+")"}>
                 <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-                <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false}/>
+                <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={false} index={2}/>
               </g>
               <g id='line-chart-3' transform={"translate("+(pad.left*2+width_1)+","+(pad.top+(height*2/3))+")"}>
                 <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
-                <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={true}/>
+                <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} width={width_2-padding*2-pad.right} width_1={width_1} height={height/3} padding={padding} pad={pad} xAxis={true} index={3}/>
               </g>
             </svg>
           </div>
