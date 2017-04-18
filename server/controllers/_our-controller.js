@@ -287,6 +287,15 @@ exports.calculateRegression = function(req, res, next) {
   res.status(200).json(predictionData);
 }
 
+exports.deleteFile = function(req, res, next){
+  var filePath = '/home/giegie/mytest/test-api-scatter/test.csv';
+  var filePath_Cor = '/home/giegie/mytest/test-api-scatter/test1.csv';
+  fs.unlinkSync(filePath);
+  fs.unlinkSync(filePath_Cor);
+  console.log("deletefile "+filePath+" success");
+  console.log("deletefile "+filePath_Cor+" success");
+  res.status(200).json("Hello");
+}
 
 var _getAllFilesFromFolder = function(dir) {
 
