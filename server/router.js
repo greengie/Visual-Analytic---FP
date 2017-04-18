@@ -29,6 +29,7 @@ module.exports = function(app) {
   apiRoutes.post('/calregression/:label_x/:label_y', _ourController.calculateRegression);
   apiRoutes.get('/jsonworld', _ourController.world);
   apiRoutes.get('/migration_map/:year', _ourController.migration_map);
+  apiRoutes.post('/delete', _ourController.deleteFile);
   //tell the app to use apiRoutes
   //and set the base url to
   // localhost:3000/api
