@@ -4,12 +4,12 @@
   opacity: 0.9;
 }
 
-.tooltip {
+#chart .tooltip {
   position: absolute;
   text-align: center;
   width: 100px;
-  height: 55px;
-  padding: 2px;
+  height: 60px;
+  padding: 1px;
   font: 12px sans-serif;
   color: darkblue;
   font-weight: bold;
@@ -22,27 +22,27 @@
 .legend rect {
   fill: #c8c8c8;
   stroke: white;
+  stroke-width: 1.5px;
   opacity: 0.8;
 }
-/*div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}*/
 
-/* Pattern styles */
-.container {
-  display: flex;
+.legend text {
+  /*text-align: center;*/
+  /*font: 12px sans-serif;*/
+  fill: #FAFAFA;
+  font-weight: bold;
 }
 
-.left-half {
-  flex: 1;
-  padding: 1rem;
+#scattertitle{
+  text-align: center;
+  fill: salmon;
+  font-weight: bold;
 }
 
-.right-half {
-  flex: 1;
-  padding: 1rem;
+#correlationtitle{
+  text-align: center;
+  fill: darksalmon;
+  font-weight: bold;
 }
 
 h1 {
@@ -70,4 +70,11 @@ svg {
   font-weight: bold;
   text-anchor: middle;
   dominant-baseline: middle;
+}
+
+#year {
+  text-align: center;
+  font: 20px sans-serif;
+  fill: #FAFAFA;
+  font-weight: bold;
 }

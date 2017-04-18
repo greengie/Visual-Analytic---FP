@@ -12,8 +12,6 @@ class Regression extends Component {
     // console.log(props);
     this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: []};
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   getFileList(){
@@ -25,22 +23,36 @@ class Regression extends Component {
       });
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
-    this.setState({showCorMatrix: false});
-  }
+  // handleChange(event) {
+  //   this.setState({value: event.target.value});
+  //   this.setState({showCorMatrix: false});
+  // }
 
-  handleSubmit(event) {
-    axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + this.state.value)
-      .then(res => {
-        // console.log(res.data.corMatrix);
-        // console.log(res.data['table-data'])
-        this.setState({corMatrix: res.data.corMatrix});
-        this.setState({data: res.data['table-data']});
-        this.setState({label: res.data.label});
-        this.setState({showCorMatrix: true});
-      });
-    event.preventDefault();
+  // handleSubmit(event) {
+  //   axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + this.state.value)
+  //     .then(res => {
+  //       this.setState({corMatrix: res.data.corMatrix});
+  //       this.setState({data: res.data['table-data']});
+  //       this.setState({label: res.data.label});
+  //       this.setState({showCorMatrix: true});
+  //     });
+  //   event.preventDefault();
+  // }
+
+  handleSubmit (filename) {
+    return event => {
+      event.preventDefault();
+      console.log(filename);
+      axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + filename)
+        .then(res => {
+          // console.log(res.data.corMatrix);
+          // console.log(res.data['table-data'])
+          this.setState({corMatrix: res.data.corMatrix});
+          this.setState({data: res.data['table-data']});
+          this.setState({label: res.data.label});
+          this.setState({showCorMatrix: true});
+        });
+    }
   }
 
   componentDidMount(){
@@ -64,28 +76,36 @@ class Regression extends Component {
 
     for(var i=0;i<file_list.length;i++){
       options.push(
-        <option key={i} value={file_list[i]}>{file_list[i]}</option>
+        <tr key={`row-${i}`}>
+          <td key={i}>{file_list[i]}</td>
+          <td>
+            <form onSubmit={this.handleSubmit(file_list[i])}>
+              <button type="submit" class="btn glyphicon glyphicon-edit"></button>
+            </form>
+          </td>
+        </tr>
       );
     }
 
-    // console.log(this.state);
+    console.log(this.state);
 
     return (
       <div className='regression'>
-        <div className='formData'>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Choose your file to view:
-              <select value={this.state.value} onChange={this.handleChange}>
-                {options}
-              </select>
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
+        <div class='container'>
+          <table class='table table-bordered'>
+            <thead>
+              <tr>
+                <th class='table-8'>Filename</th>
+                <th class='table-6'>Action</th>
+              </tr>
+              {options}
+            </thead>
+          </table>
         </div>
         {showCorMatrix}
       </div>
     );
   }
 }
+
 export default Regression;

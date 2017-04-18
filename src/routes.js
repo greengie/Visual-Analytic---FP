@@ -14,6 +14,7 @@ import Login from './components/login';
 import Main from './components/main';
 import Upload from './components/upload';
 import Regression from './components/regression';
+import Main_World from './components/main_world';
 
 //====================
 // Define our routes
@@ -25,6 +26,7 @@ export default (
       <Route path='chart' component={Chart} />
       <Route path='upload/:userid' component={Upload} />
       <Route path='regression/:userid' component={Regression} />
+      <Route path='map' component={Main_World} />
     </Route>
   </Route>
 );

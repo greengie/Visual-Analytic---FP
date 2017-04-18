@@ -18,9 +18,9 @@ class CorrelationMatrix extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
+    // console.log(props);
 
-    this.state = {corMatrix: props.corMatrix, label: props.label, data: props.data, label_x: '', label_y: '', showScatterPlot: false, regressionData: []};
+    this.state = {label_x: '', label_y: '', showScatterPlot: false, regressionData: []};
   }
 
   showData(a,i,j){
@@ -47,28 +47,29 @@ class CorrelationMatrix extends Component {
 
   _handleMouseClick(i, j){
     this.setState({showScatterPlot: true});
-    this.setState({label_x: this.state.label[i]});
-    this.setState({label_y: this.state.label[j]});
-    axios.post(API_URL+'calregression/'+this.state.label[i]+'/'+this.state.label[j], {
-        data: this.state.data
+    this.setState({label_x: this.props.label[i]});
+    this.setState({label_y: this.props.label[j]});
+    axios.post(API_URL+'calregression/'+this.props.label[i]+'/'+this.props.label[j], {
+        data: this.props.data
       })
       .then(res => {
         this.setState({regressionData: res.data});
         // console.log(res.data);
       });
-    console.log(this.state.label[i]);
-    console.log(this.state.label[j]);
+    console.log(this.props.label[i]);
+    console.log(this.props.label[j]);
   }
 
   render() {
-    const corMatrix = this.state.corMatrix;
+    const corMatrix = this.props.corMatrix;
+    const label = this.props.label;
     const start_color = '#3385ff';
     const end_color = '#ff3333';
     const numrows = corMatrix.length;
     const numcols = corMatrix[0].length;
     const label_x = this.state.label_x;
     const label_y = this.state.label_y;
-    const data = this.state.data;
+    const data = this.props.data;
     const regressionData = this.state.regressionData;
 
     // const maxValue = d3.max(corMatrix, function(layer) { return d3.max(layer, function(d) { return d; }); });
