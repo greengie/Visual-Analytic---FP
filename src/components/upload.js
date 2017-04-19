@@ -88,7 +88,7 @@ class Upload extends Component {
     reader.onload = (upload) => {
       this.setState({
         data_text: upload.target.result,
-        filename: (this.state.file_num+1)+'.csv',
+        filename: file.name,
         fileid: this.props.params.userid,
         filetype: file.type,
         filesize: file.size

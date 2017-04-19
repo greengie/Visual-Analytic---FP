@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from 'axios';
 import SelectFile from './selectfile'
 import CorrelationMatrix from './correlationMatrix'
+import {Table, thead, tr, td, tbody, Button} from 'react-bootstrap';
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 
@@ -9,35 +10,15 @@ class Regression extends Component {
 
   constructor(props) {
     super(props);
-    // console.log(props);
-    this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: []};
-
+    this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: [], deleteHandle: 1};
   }
 
   getFileList(){
     axios.get(API_URL + 'list/' + this.props.params.userid)
       .then(res => {
-        this.setState({value: res.data[0]});
         this.setState({file_list: res.data});
-        // return res.data[0].num_file;
       });
   }
-
-  // handleChange(event) {
-  //   this.setState({value: event.target.value});
-  //   this.setState({showCorMatrix: false});
-  // }
-
-  // handleSubmit(event) {
-  //   axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + this.state.value)
-  //     .then(res => {
-  //       this.setState({corMatrix: res.data.corMatrix});
-  //       this.setState({data: res.data['table-data']});
-  //       this.setState({label: res.data.label});
-  //       this.setState({showCorMatrix: true});
-  //     });
-  //   event.preventDefault();
-  // }
 
   handleSubmit (filename) {
     return event => {
@@ -45,8 +26,6 @@ class Regression extends Component {
       console.log(filename);
       axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + filename)
         .then(res => {
-          // console.log(res.data.corMatrix);
-          // console.log(res.data['table-data'])
           this.setState({corMatrix: res.data.corMatrix});
           this.setState({data: res.data['table-data']});
           this.setState({label: res.data.label});
@@ -55,8 +34,37 @@ class Regression extends Component {
     }
   }
 
+  handleDelete(filename){
+    console.log('delete');
+    return event => {
+      event.preventDefault();
+      if (window.confirm("Are you sure you want to delete?")) {
+        axios.post(API_URL + 'delete',{
+          filename: filename,
+          fileid: this.props.params.userid
+        })
+        .then(res => {
+          console.log(res.data);
+          this.setState({deleteHandle: (this.state.deleteHandle+1)});
+          this.setState({showCorMatrix: false});
+        });
+      }
+
+    }
+  }
+
   componentDidMount(){
     this.getFileList();
+    console.log('didmount');
+  }
+
+  componentWillUpdate(nextProps, nextstate){
+    if(this.state.deleteHandle != nextstate.deleteHandle){
+      console.log('didupdate');
+      this.getFileList();
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -79,30 +87,36 @@ class Regression extends Component {
         <tr key={`row-${i}`}>
           <td key={i}>{file_list[i]}</td>
           <td>
-            <form onSubmit={this.handleSubmit(file_list[i])}>
-              <button type="submit" class="btn glyphicon glyphicon-edit"></button>
+            <form onSubmit={this.handleSubmit(file_list[i])} style={{"display" : "inline"}}>
+              <Button type="submit" className="btn glyphicon glyphicon-edit"></Button>
+            </form>
+            <form onSubmit={this.handleDelete(file_list[i])} style={{"display" : "inline"}}>
+              <input type="hidden" name="nid" value="file_list[i]" />
+              <Button type="submit" className="btn glyphicon glyphicon-trash"></Button>
             </form>
           </td>
         </tr>
       );
     }
 
-    console.log(this.state);
+    // console.log(this.state);
 
     return (
       <div className='regression'>
-        <div class='container'>
-          <table class='table table-bordered'>
+        <div className='container'>
+          <Table responsive bordered>
             <thead>
               <tr>
-                <th class='table-8'>Filename</th>
-                <th class='table-6'>Action</th>
+                <th className='table-8'>Filename</th>
+                <th className='table-6'>Action</th>
               </tr>
-              {options}
             </thead>
-          </table>
+            <tbody>
+              {options}
+            </tbody>
+          </Table>
+          {showCorMatrix}
         </div>
-        {showCorMatrix}
       </div>
     );
   }

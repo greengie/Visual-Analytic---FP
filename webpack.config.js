@@ -26,15 +26,17 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('css')
+        loader: 'style!css',
+        options: {minimize: true}
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: 'url-loader?limit=100000'
       }
     ]
   },
   output: {
     path: __dirname,
     filename: "bundle.js"
-  },
-  plugins: [
-    new ExtractTextPlugin('src/assets/stylesheets/app.css', { allChunks: true })
-  ]
+  }
 };
