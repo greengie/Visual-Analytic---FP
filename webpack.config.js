@@ -26,7 +26,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css',
+        loader: ExtractTextPlugin.extract('css'),
         options: {minimize: true}
       },
       {
@@ -38,5 +38,8 @@ module.exports = {
   output: {
     path: __dirname,
     filename: "bundle.js"
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin('src/assets/stylesheets/app.css', { allChunks: true })
+  ]
 };
