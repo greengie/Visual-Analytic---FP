@@ -198,7 +198,7 @@ exports.checkUserAreInDB = function(req,res,next){
 }
 
 exports.uploadCSV = function(req, res, next){
-  // console.log(req.files[0]);
+  // console.log(req.body.filename);
   // console.log(typeof req.body.file_num === 'string');
   // var update_file_num = req.body.file_num+1;
   var dir = './uploads/'+req.body.fileid;
@@ -288,13 +288,25 @@ exports.calculateRegression = function(req, res, next) {
 }
 
 exports.deleteFile = function(req, res, next){
-  var filePath = '/home/giegie/mytest/test-api-scatter/test.csv';
-  var filePath_Cor = '/home/giegie/mytest/test-api-scatter/test1.csv';
+  var folderId = req.body.fileid;
+  var fileName = req.body.filename;
+  var filePath = '/home/giegie/mytest/test-api-scatter/server/uploads/'+folderId+'/file/'+fileName;
+  var filePath_Cor = '/home/giegie/mytest/test-api-scatter/server/uploads/'+folderId+'/cor-data/cor-'+fileName;
+  // console.log(req.body);
   fs.unlinkSync(filePath);
   fs.unlinkSync(filePath_Cor);
-  console.log("deletefile "+filePath+" success");
-  console.log("deletefile "+filePath_Cor+" success");
-  res.status(200).json("Hello");
+  console.log("deletefile "+filePath+" success!!!");
+  console.log("deletefile "+filePath_Cor+" success!!!");
+  // update userdata
+  Subjects.any("update userdata set num_file=num_file-1 where id=$1", [folderId])
+  .then(function (result) {
+    console.log('update!!!');
+    res.status(200).json("Hello");
+  })
+  .catch(function (error){
+    console.log(error);
+    res.status(404).json(error);
+  });
 }
 
 var _getAllFilesFromFolder = function(dir) {

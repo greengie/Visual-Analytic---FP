@@ -162,6 +162,54 @@ module.exports = {
         rData.push((Math.log10(y_predict)));
         // rData.push(y_predict);
       }
+      else if((x == 'internet_use') && (y == 'expense_on_health')){
+        var y_predict = 0 * dataX[i] + 677.5414;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'energy_use') && (y == 'expense_on_health')){
+        var y_predict = 0 * dataX[i] + 634.856;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'gdp') && (y == 'expense_on_health')){
+        var y_predict = 0 * dataX[i] + 624.3142;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'total_population') && (y == 'expense_on_health')){
+        var y_predict = 0 * dataX[i] + 747.757;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'm_in') && (y == 'expense_on_health')){
+        var y_predict = 0.0002 * dataX[i] + 591.0414;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'm_out') && (y == 'expense_on_health')){
+        var y_predict = 0 * dataX[i] + 747.757;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'm_out')){
+        var y_predict = 0 * dataX[i] + 832229.1565;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'm_in')){
+        var y_predict = 1236.176 * dataX[i] - 77646.7563;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'total_population')){
+        var y_predict = 0 * dataX[i] + 29625425.1567;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'gdp')){
+        var y_predict = 469889352.7027 * dataX[i] + 1158770048411.758;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'energy_use')){
+        var y_predict = 71521.4209 * dataX[i] + 7501907.0397;
+        rData.push((Math.log10(y_predict)));
+      }
+      else if((x == 'expense_on_health') && (y == 'internet_use')){
+        var y_predict = 6765.5479 * dataX[i] - 592153.5657;
+        rData.push((Math.log10(y_predict)));
+      }
       else{
         var y_predict = dataX[i];
         rData.push((Math.log10(y_predict)));
