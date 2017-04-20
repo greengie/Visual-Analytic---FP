@@ -198,7 +198,7 @@ exports.checkUserAreInDB = function(req,res,next){
 }
 
 exports.uploadCSV = function(req, res, next){
-  // console.log(req.body.filename);
+  // console.log(req.files[0]);
   // console.log(typeof req.body.file_num === 'string');
   // var update_file_num = req.body.file_num+1;
   var dir = './uploads/'+req.body.fileid;
