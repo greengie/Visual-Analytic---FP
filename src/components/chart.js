@@ -228,7 +228,7 @@ const Chart = React.createClass({
           </FormGroup>
           <div id='chart'>
             <svg ref='svg' width={totalw} height={totalh}>
-              <ScatterPlot dataX={dataX} dataY={dataY} year={value} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>
+              <ScatterPlot dataX={dataX} labelX={selectorX} dataY={dataY} labelY={selectorY} year={value} xMax={xMax} yMax={yMax} dataR={dataR} labelR={selectorR} width={width_1} height={height} padding={padding} pad={pad}/>
               <g id='line-chart-1' transform={"translate("+(pad.left*2+width_1)+","+pad.top+")"}>
                 <text id='correlationtitle' x={(width_2/2)-pad.left} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Correlation</text>
                 <rect width={width_2-padding*2-pad.right} height={height/3} fill={"#c8c8c8"}></rect>
@@ -256,7 +256,3 @@ const Chart = React.createClass({
 });
 
 export default Chart;
-
-// <LineChart data={corData} path={'path1'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...styles2} />
-// <LineChart data={corDataX} path={'path2'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />
-// <LineChart data={corDataY} path={'path3'} yearMin={this.getyearMin()} yearMax={this.getyearMax()} year={value} {...linestyles} />

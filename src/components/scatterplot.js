@@ -40,7 +40,7 @@ export default class ScatterPlot extends React.Component{
   }
 
   render(){
-    const {dataX, dataY, dataR, year, width, height, padding, xMax, yMax, pad} = this.props;
+    const {dataX, dataY, dataR, labelX, labelY, labelR, year, width, height, padding, xMax, yMax, pad} = this.props;
     const data = this.getNewData(dataX, dataY, dataR);
     // console.log(data);
     //return a function that "scales" X coordinates from the data to fit the chart.
@@ -71,7 +71,7 @@ export default class ScatterPlot extends React.Component{
         <text id='scattertitle' x={width/2} y={-pad.top/2} textAnchor={'middle'} dominant-baseline={"middle"}>Scatter-Plot</text>
         {data.map((d, i) => {
           return (
-            <Dot key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={(rScale(d.value))*1.8} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
+            <Dot index={i} labelX={labelX} labelY={labelY} labelR={labelR} key={d.country_code} x={xScale(d.data_value_x)} y={yScale(d.data_value_y)} r={(rScale(d.value))*1.8} color={d.color} name={d.country_name} real_x={d.data_value_x} real_y={d.data_value_y} real_r={d.value}/>
           );
         })}
         <text id='year' x={20} y={30}>{year}</text>

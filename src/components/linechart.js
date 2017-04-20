@@ -26,7 +26,7 @@ export default class LineChart extends React.Component{
 
     // console.log(r);
     // console.log(pos_x);
-    // console.log(pos_y);
+    var r_format = r.toFixed(3);
 
     let node = d3.select(this.refs.circle);
 
@@ -41,9 +41,19 @@ export default class LineChart extends React.Component{
     tooltip.transition()
       .duration(500)
       .style("opacity", .9);
-    tooltip.html("Correlation : "+r)
-      .style("left", (this.props.width_1+pos_x) + "px")
-      .style("top", (this.props.height+(pos_y*index*3)-(this.props.pad.top*index)) + "px");
+    if(index == 1){
+      tooltip.html("Correlation of X-axis and Y-axis : "+r_format)
+        .style("left", (this.props.width_1+pos_x+this.props.pad.left) + "px")
+        .style("top", (650+((index-1)*(150+(index*5)))) + "px");
+    }else if(index == 2){
+      tooltip.html("Correlation of R-axis and X-axis : "+r_format)
+        .style("left", (this.props.width_1+pos_x+this.props.pad.left) + "px")
+        .style("top", (650+((index-1)*(150+(index*5)))) + "px");
+    }else if(index == 3){
+      tooltip.html("Correlation of R-axis and Y-axis : "+r_format)
+        .style("left", (this.props.width_1+pos_x+this.props.pad.left) + "px")
+        .style("top", (650+((index-1)*(150+(index*5)))) + "px");
+    }
   }
 
   flashOut(){

@@ -1,6 +1,7 @@
 import React from 'react';
 import d3 from 'd3';
 const d3Ease = require("d3-ease");
+import {Tooltip} from 'react-bootstrap';
 
 export default class Dot extends React.Component{
   constructor(props){
@@ -28,9 +29,9 @@ export default class Dot extends React.Component{
     tooltip.transition()
       .duration(1000)
       .style("opacity", .9);
-    tooltip.html(this.props.name+"<br/>"+"X: "+formatNumber(this.props.real_x)+"<br />"+"Y: "+formatNumber(this.props.real_y)+"<br />"+"R: "+formatNumber(this.props.real_r))
-      .style("left", (this.props.x+30) + "px")
-      .style("top", (this.props.y+250) + "px");
+    tooltip.html(this.props.name+"<br/>"+this.props.labelX+" : "+formatNumber(this.props.real_x)+"<br />"+this.props.labelY+" : "+formatNumber(this.props.real_y)+"<br />"+this.props.labelR+" : "+formatNumber(this.props.real_r))
+      .style("left", (this.props.x) + "px")
+      .style("top", (this.props.y+500) + "px");
   }
   //
   flashOut(){
@@ -77,7 +78,7 @@ export default class Dot extends React.Component{
   }
 
   render() {
-    const {x, y, r, color} = this.props;
+    const {x, y, r, color, labelX, labelY, labelR} = this.props;
     const {hoverOn, onClick} = this.state;
     return <circle cx={x} cy={y} r={r} fill={color}
             ref="circle" onMouseOver={this.flash.bind(this)}
