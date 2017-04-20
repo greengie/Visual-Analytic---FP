@@ -13,29 +13,14 @@ import cor_init_x from '../data/cor_init_x';
 import cor_init_y from '../data/cor_init_y';
 import Scaling from './scaling';
 import LineChart from './linechart';
+import {FormGroup} from 'react-bootstrap';
+
 const Router = require('react-router');
 
 require('rc-slider/assets/index.css');
 
 const Slider = require('rc-slider');
-// const styles = {
-//   width   : 1200,
-//   height  : 600,
-//   padding : 50,
-// };
-//
-// const linestyles = {
-//   width   : 600,
-//   height  : 500,
-//   padding : 50,
-// };
-//
-// const styles2 = {
-//   width   : 1200,
-//   height  : 200,
-//   padding : 50,
-// };
-//
+
 const bar_style = {
   width : 1200,
   margin : 50
@@ -221,26 +206,26 @@ const Chart = React.createClass({
     const {dataX, dataY, dataR, selectorX, selectorY, selectorR, value, xMax, yMax, scaling_x, scaling_y, corData, corDataX, corDataY} = this.state;
     return (
         <div className='main'>
-          <div id='selector-x'>
+          <FormGroup>
             <label>
-              X-AXIS:
-              <Selector selector={selectorX} handleSelectorChange={this.handleSelectorXChange} />
+              X-AXIS :
             </label>
+            <Selector selector={selectorX} handleSelectorChange={this.handleSelectorXChange} />
             <Scaling scale={scaling_x} handleScaleChange={this.handleScaleXChange} />
-          </div>
-          <div id='selector-y'>
+          </FormGroup>
+          <FormGroup>
             <label>
-              Y-AXIS:
-              <Selector selector={selectorY} handleSelectorChange={this.handleSelectorYChange} />
+              Y-AXIS :
             </label>
+            <Selector selector={selectorY} handleSelectorChange={this.handleSelectorYChange} />
             <Scaling scale={scaling_y} handleScaleChange={this.handleScaleYChange} />
-          </div>
-          <div id='selector-r'>
+          </FormGroup>
+          <FormGroup>
             <label>
-              R:
-              <R_Selector selector={selectorR} handleSelectorChange={this.handleSelectorRChange} />
+              R :
             </label>
-          </div>
+            <R_Selector selector={selectorR} handleSelectorChange={this.handleSelectorRChange} />
+          </FormGroup>
           <div id='chart'>
             <svg ref='svg' width={totalw} height={totalh}>
               <ScatterPlot dataX={dataX} dataY={dataY} year={value} xMax={xMax} yMax={yMax} dataR={dataR} width={width_1} height={height} padding={padding} pad={pad}/>

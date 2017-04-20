@@ -11,7 +11,7 @@ const d3Queue = require('d3-queue');
 const Slider = require('rc-slider');
 const bar_style = {
   width : 500,
-  margin : 50
+  margin : 10
 };
 const API_URL = 'http://128.199.99.233:3000/api/';
 
@@ -64,8 +64,6 @@ class Main_World extends Component {
   }
 
   render() {
-      // console.log(this.state.value);
-      // console.log(this.state.nameIdMap);
       return (
         <div className='Map'>
           <Slider value={this.state.value} min={1990} max={2015}
@@ -73,7 +71,7 @@ class Main_World extends Component {
             onChange={this.onSliderChange.bind(this)} />
           <World width={1440} height={600}
               data={this.state.data} nameIdMap={this.state.nameIdMap}
-              focusCountry={this.state.focusCountry}
+              focusCountry={this.state.focusCountry} year={this.state.value}
               />
           <Select name="focusCountry"
                   value={this.state.focusCountry}

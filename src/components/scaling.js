@@ -1,4 +1,5 @@
 import React from 'react';
+import {FormControl} from 'react-bootstrap';
 
 const Scaling = React.createClass({
   propTypes: {
@@ -9,10 +10,10 @@ const Scaling = React.createClass({
   render(){
     // console.log(this.props.scale);
     return(
-      <select value={this.props.scale} onChange={this.props.handleScaleChange}>
-        <option value="lin">lin</option>
-        <option value="log">log</option>
-      </select>
+      <FormControl style={{ width: 150 }}componentClass="select" value={this.props.scale} onChange={this.props.handleScaleChange}>
+        <option value="lin">Linear</option>
+        <option value="log">Logarithm</option>
+      </FormControl>
     );
   }
 });

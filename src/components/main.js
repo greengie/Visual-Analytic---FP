@@ -17,7 +17,7 @@ export default class Main extends Component {
       <div>
         <Navigation id={this.state.id} />
         <div>
-          <h2>Welcomes</h2>
+          <h2>Welcome</h2>
           <p>{this.state.first_name} {this.state.last_name}</p>
         </div>
         <Logout />

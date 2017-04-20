@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {bindAll} from 'lodash';
 import axios from 'axios';
 import $ from 'jquery';
-// import FormData from 'react-form-data';
+import {Button, FormGroup, Input, FormControl, FieldGroup} from 'react-bootstrap';
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 

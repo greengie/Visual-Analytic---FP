@@ -110,9 +110,11 @@ const CountryMigrations = ({ data, nameIdMap, centroids }) => {
            );
          }
 
+        //  console.log(this.props.year);
 
          return (
              <svg width={width} height={height}>
+              <text x='50' y='550' stroke={'Black'} fontSize={50}>{this.props.year}</text>
               {Maps}
               {Migration}
            </svg>

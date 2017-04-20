@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import d3 from 'd3';
 import Axis from './matrix-axis';
+import _ from 'lodash';
 const d3Ease = require("d3-ease");
 require('../assets/stylesheets/scatter-Matrix.css');
 
@@ -9,7 +10,6 @@ class PlotScatter extends Component{
     super(props);
     // console.log(props);
     this.state = {hoverIndex: []};
-    // this.state = {dataX: props.dataX, dataY: props.dataY, label_x:props.label_x, label_y:props.label_y}
   }
 
   initData(dataX, dataY){
@@ -35,9 +35,9 @@ class PlotScatter extends Component{
       hoverIndex.push(key);
       let circle = d3.select(this.refs['circle-'+key]);
       circle.transition()
-        .duration(1000)
+        .duration(200)
         .ease(d3Ease.easeCubicOut)
-        .attr('r', 5)
+        .attr('r', 6)
         .style("fill", 'lightgreen')
     }
     this.setState({hoverIndex: hoverIndex});
@@ -47,7 +47,7 @@ class PlotScatter extends Component{
     for(var i=0;i<this.state.hoverIndex.length;i++){
       let circle = d3.select(this.refs['circle-'+this.state.hoverIndex[i]]);
       circle.transition()
-        .duration(400)
+        .duration(1000)
         .ease("bounce")
         .attr('r', 3)
         .style("fill", 'crimson')
@@ -77,7 +77,8 @@ class PlotScatter extends Component{
     const transform_label_y = "rotate(270,"+(-pad.left*0.8)+","+(height/2)+")";
     const line = d3.svg.line()
       .x((d) => xScale(d[0]))
-      .y((d) => yScale(d[1]));
+      .y((d) => yScale(d[1]))
+      .interpolate("basis");
     const data = this.initData(dataX, dataY).sort(this.sortFunction);
     const data_predict = this.initData(dataX, dataY_predict).sort(this.sortFunction);
 
@@ -117,18 +118,18 @@ class PlotScatter extends Component{
             <line key={i} class='axes' y1={yScale(d)} y2={yScale(d)} x1={0} x2={width} stroke={"white"} strokeWidth={1}></line>
           );
         })}
+        {data.map((d,i) => {
+          return(
+            <circle ref={"circle-"+i} key={i+'dot'} r={3} cx={xScale(d[0])} cy={yScale(d[1])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
+          );
+        })}
         {data_predict.map((d,i) => {
           return(
-            <circle key={i+'regression-line'} r={3} cx={xScale(d[0])} cy={yScale(d[1])}
+            <circle key={i+'regression-line'} r={4} cx={xScale(d[0])} cy={yScale(d[1])}
             stroke={"black"} strokeWidth={1} fill={'darkslateblue'}
             onMouseOver={this.flash.bind(this, i)}
             onMouseOut={this.flashOut.bind(this)}
             />
-          );
-        })}
-        {data.map((d,i) => {
-          return(
-            <circle ref={"circle-"+i} key={i+'dot'} r={3} cx={xScale(d[0])} cy={yScale(d[1])} stroke={"black"} strokeWidth={1} fill={'crimson'}/>
           );
         })}
       </g>

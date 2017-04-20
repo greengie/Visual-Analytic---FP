@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {Button, ButtonToolbar} from 'react-bootstrap';
 const Router = require('react-router');
 
 export default class Logout extends Component {
@@ -13,7 +14,7 @@ export default class Logout extends Component {
   render() {
     return (
       <div>
-        <button id='logout' type='button' onClick={this.logoutFacebook} >Logout</button>
+        <Button bsStyle="primary" id='logout' type='button' onClick={this.logoutFacebook} >Logout</Button>
       </div>
     );
   }

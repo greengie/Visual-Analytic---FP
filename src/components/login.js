@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import LoginHOC from 'react-facebook-login-hoc';
 import axios from 'axios';
+import {Button, ButtonToolbar} from 'react-bootstrap';
+
 const Router = require('react-router');
 
 const configureLoginProps = {
@@ -66,15 +68,11 @@ class Login extends Component {
     this.login(this.getStatus.bind(this));
   }
 
-  // logoutFacebook() {
-  //   this.logout()
-  // }
-
   render() {
     return (
-      <div>
-        <button onClick={ this.loginFacebook.bind(this) }>Facebook Login</button>
-      </div>
+      <ButtonToolbar>
+        <Button bsStyle="primary" onClick={ this.loginFacebook.bind(this) }>Facebook Login</Button>
+      </ButtonToolbar>
     );
   }
 }

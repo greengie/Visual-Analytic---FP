@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import d3 from 'd3';
 import PlotScatter from './plotScatter';
 import axios from 'axios';
+import _ from 'lodash';
+const d3Queue = require('d3-queue');
 
 require('../assets/stylesheets/correlationMatrix.css');
 
@@ -20,14 +22,10 @@ class CorrelationMatrix extends Component {
     super(props);
     // console.log(props);
 
-    this.state = {label_x: '', label_y: '', showScatterPlot: false, regressionData: []};
+    this.state = {label_x: '', label_y: '', regressionData: [], showScatterPlot: false, onToggle: 1};
   }
 
   showData(a,i,j){
-    // console.log(color);
-    // console.log(a);
-    // console.log(this.state.label[i]);
-    // console.log(this.state.label[j]);
     let square = d3.select(this.refs['rect-'+i+'-'+j]);
     square.style("stroke-width", 2)
         .style("stroke", 'black')
@@ -46,18 +44,27 @@ class CorrelationMatrix extends Component {
   }
 
   _handleMouseClick(i, j){
-    this.setState({showScatterPlot: true});
-    this.setState({label_x: this.props.label[i]});
-    this.setState({label_y: this.props.label[j]});
+    console.log('on click');
     axios.post(API_URL+'calregression/'+this.props.label[i]+'/'+this.props.label[j], {
         data: this.props.data
       })
       .then(res => {
-        this.setState({regressionData: res.data});
-        // console.log(res.data);
+        this.setState({regressionData: res.data,
+                        showScatterPlot: true,
+                        label_x: this.props.label[i],
+                        label_y: this.props.label[j]});
       });
     console.log(this.props.label[i]);
     console.log(this.props.label[j]);
+  }
+
+  componentWillUpdate(nextProps, nextstate){
+    if(nextProps.toggle != this.state.onToggle){
+      console.log('have click from regress');
+      this.setState({label_x: '', label_y: '', regressionData: [], showScatterPlot: false, onToggle: this.state.onToggle+1});
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -71,7 +78,9 @@ class CorrelationMatrix extends Component {
     const label_y = this.state.label_y;
     const data = this.props.data;
     const regressionData = this.state.regressionData;
-
+    const toggle = this.props.toggle;
+    console.log(toggle);
+    console.log(this.state.onToggle);
     // const maxValue = d3.max(corMatrix, function(layer) { return d3.max(layer, function(d) { return d; }); });
     // const minValue = d3.min(corMatrix, function(layer) { return d3.min(layer, function(d) { return d; }); });
 
@@ -91,12 +100,9 @@ class CorrelationMatrix extends Component {
 
     if(this.state.showScatterPlot){
       showScatterPlot = (
-        <PlotScatter label_x={label_x} label_y={label_y} dataX={data[label_x]} dataY={data[label_y]} width={width} height={height} pad={pad} padding={padding} dataY_predict={this.state.regressionData} />
+        <PlotScatter label_x={label_x} label_y={label_y} dataX={data[label_x]} dataY={data[label_y]} width={width} height={height} pad={pad} padding={padding} dataY_predict={regressionData} />
       );
     }
-
-    // console.log(data[label_x]);
-    // console.log(data[label_y]);
 
     return(
       <div className='cor-scatter'>

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import _ from 'lodash';
 import SelectFile from './selectfile'
 import CorrelationMatrix from './correlationMatrix'
-import {Table, thead, tr, td, tbody, Button} from 'react-bootstrap';
+import {Table, thead, tr, td, tbody, Button, ButtonToolbar, Glyphicon} from 'react-bootstrap';
 
 const API_URL = 'http://128.199.99.233:3000/api/';
 
@@ -10,53 +11,62 @@ class Regression extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: [], deleteHandle: 1};
+    this.state = {showCorMatrix: false, file_list: [], data: {}, corMatrix: [], label: [], deleteHandle: 1, toggle: 0};
+    console.log('aaaaa');
+    this.getFileList();
+    console.log('ccccc');
   }
 
   getFileList(){
     axios.get(API_URL + 'list/' + this.props.params.userid)
       .then(res => {
         this.setState({file_list: res.data});
+        console.log('finish');
       });
   }
 
-  handleSubmit (filename) {
-    return event => {
-      event.preventDefault();
-      console.log(filename);
-      axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + filename)
-        .then(res => {
-          this.setState({corMatrix: res.data.corMatrix});
-          this.setState({data: res.data['table-data']});
-          this.setState({label: res.data.label});
-          this.setState({showCorMatrix: true});
-        });
-    }
-  }
+  handleSubmit(evt, file) {
+    evt.preventDefault();
+    console.log('submit');
+    var i = file.split('$')[1].split('.')[0];
+    var filename = this.state.file_list[i];
+    console.log(i);
+    console.log(this.state.file_list);
+    this.setState({showCorMatrix: false, data: {}, corMatrix: [], label: [], deleteHandle: 1, toggle: 0});
+    axios.get(API_URL + 'prediction/' + this.props.params.userid + '/' + filename)
+      .then(res => {
+        let toggle = 1;
+        this.setState({corMatrix: res.data.corMatrix,
+                        data: res.data['table-data'],
+                        label: res.data.label,
+                        showCorMatrix: true,
+                        toggle
+      });
+  });
+}
 
-  handleDelete(filename){
+  handleDelete(evt, file){
+    evt.preventDefault();
     console.log('delete');
-    return event => {
-      event.preventDefault();
-      if (window.confirm("Are you sure you want to delete?")) {
-        axios.post(API_URL + 'delete',{
-          filename: filename,
-          fileid: this.props.params.userid
-        })
-        .then(res => {
-          console.log(res.data);
-          this.setState({deleteHandle: (this.state.deleteHandle+1)});
-          this.setState({showCorMatrix: false});
-        });
-      }
-
+    var i = file.split('$')[1].split('.')[0];
+    var filename = this.state.file_list[i];
+    console.log(i);
+    console.log(filename);
+    if (window.confirm("Are you sure you want to delete?")) {
+      axios.post(API_URL + 'delete',{
+        filename: filename,
+        fileid: this.props.params.userid
+      })
+      .then(res => {
+        console.log(res.data);
+        this.setState({deleteHandle: (this.state.deleteHandle+1), showCorMatrix: false});
+      });
     }
   }
 
-  componentDidMount(){
-    this.getFileList();
-    console.log('didmount');
-  }
+  // componentWillMount(){
+  //   this.getFileList();
+  // }
 
   componentWillUpdate(nextProps, nextstate){
     if(this.state.deleteHandle != nextstate.deleteHandle){
@@ -78,28 +88,37 @@ class Regression extends Component {
 
     if(this.state.showCorMatrix){
       showCorMatrix = (
-        <CorrelationMatrix corMatrix={corMatrix} label={label} data={data} />
+        <CorrelationMatrix toggle={this.state.toggle} corMatrix={corMatrix} label={label} data={data} />
       );
     }
 
+    console.log(this.state);
+
     for(var i=0;i<file_list.length;i++){
+      var file = file_list[i];
       options.push(
-        <tr key={`row-${i}`}>
+        <tr key={`${i}`}>
           <td key={i}>{file_list[i]}</td>
           <td>
-            <form onSubmit={this.handleSubmit(file_list[i])} style={{"display" : "inline"}}>
-              <Button type="submit" className="btn glyphicon glyphicon-edit"></Button>
+            <form onSubmit={(evt, file) => {
+                this.handleSubmit(evt, file);
+                }
+              }
+              style={{"display" : "inline"}}>
+              <Button type="submit"><Glyphicon glyph="signal" /></Button>
             </form>
-            <form onSubmit={this.handleDelete(file_list[i])} style={{"display" : "inline"}}>
+            <form onSubmit={(evt, file) => {
+                this.handleDelete(evt, file);
+                }
+              }
+              style={{"display" : "inline"}}>
               <input type="hidden" name="nid" value="file_list[i]" />
-              <Button type="submit" className="btn glyphicon glyphicon-trash"></Button>
+              <Button type="submit"><Glyphicon glyph="trash" /></Button>
             </form>
           </td>
         </tr>
       );
     }
-
-    // console.log(this.state);
 
     return (
       <div className='regression'>
